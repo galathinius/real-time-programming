@@ -1,0 +1,6 @@
+#!/bin/bash
+
+erl -s server_connection start_s -noshell -s init stop
+
+# to exit erlang after function finish:
+# -s init stop 

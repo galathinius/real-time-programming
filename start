@@ -4,7 +4,7 @@ set -e
 
 printf "Compiling\n\n"
 
-erlc server_connection.erl
+erlc src/server_connection.erl
 
 printf "\nRunning\n\n"
 

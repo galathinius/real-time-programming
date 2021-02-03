@@ -1,0 +1,11 @@
+https://github.com/inaka/shotgun
+https://hex.pm/packages/shotgun
+https://github.com/inaka/erlang-katana
+https://learnyousomeerlang.com/designing-a-concurrent-application
+https://learnyousomeerlang.com/supervisors
+
+https://stackoverflow.com/questions/40211752/how-to-get-an-erlang-app-to-run-at-starting-rebar3
+https://ferd.ca/rebar3-shell.html
+https://github.com/erlang/rebar3
+https://rebar3.org/docs/
+https://habr.com/ru/post/319950/

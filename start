@@ -4,11 +4,17 @@ set -e
 
 printf "Compiling\n\n"
 
-erlc src/server_connection.erl
+# erlc src/server_connection.erl
+rebar3 compile
 
 printf "\nRunning\n\n"
 
-erl -s server_connection start_s -noshell -s init stop
+# erl -s server_connection start_s -noshell -s init stop
+# below is from tutorial, to modify
+# https://howistart.org/posts/erlang/1/
+erl -env ERL_LIBS _build/default/lib -eval 'application:ensure_all_started(muumuu).' -noshell
+
+
 printf "\n"
 
 # to exit erlang after function finish:

@@ -1,3 +1,7 @@
+http://www.erlang-in-anger.com/
+https://howistart.org/posts/erlang/1/
+
+
 https://github.com/inaka/shotgun
 https://hex.pm/packages/shotgun
 https://github.com/inaka/erlang-katana
@@ -9,3 +13,11 @@ https://ferd.ca/rebar3-shell.html
 https://github.com/erlang/rebar3
 https://rebar3.org/docs/
 https://habr.com/ru/post/319950/
+
+https://howistart.org/posts/erlang/1/
+
+
+https://erlanger.slack.com/
+
+
+https://github.com/inaka/worker_pool

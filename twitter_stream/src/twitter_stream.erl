@@ -13,7 +13,6 @@ main() ->
 % twitter_stream:tweets1().
 
 tweets1() ->
-    % not tested
     {ok, Conn} = shotgun:open("localhost", 4000),
     Options = #{async => true, async_mode => sse},
     {ok, Ref} = shotgun:get(Conn, "/tweets/1", #{},
@@ -21,8 +20,6 @@ tweets1() ->
     wait(1),
     Events = shotgun:events(Conn),
     process_events(Events),
-    % io:format("~p~n", [Events]),
-    % shotgun:events(Conn).
     shotgun:close(Conn).
 
 process_events(Events) ->
@@ -33,6 +30,21 @@ process_events(Events) ->
 one_event(Event) ->
     {_, _, Message} = Event,
     Text = shotgun:parse_event(Message),
-    io:format("~p~n", [Text]).
+    Data = maps:get(data, Text),
+    Isjson = jsx:is_json(Data),
+    if Isjson == true -> process_map(Data);
+       true -> io:fwrite("")
+    end.
 
-wait(Sec) -> receive  after 10 * Sec -> ok end.
+process_map(Amap) ->
+    io:format("~p~n", ["\ngot something\n"]),
+    TheMap = jsx:decode(Amap),
+    Mess = maps:get(<<"message">>, TheMap),
+    Twt = maps:get(<<"tweet">>, Mess),
+    Text = maps:get(<<"text">>, Twt),
+    NotBin = unicode:characters_to_list(Text, utf8),
+    Low = string:lowercase(NotBin),
+    Chunks = string:tokens(Low, [$\s]),
+    io:format("~p~n", [Chunks]).
+
+wait(Sec) -> receive  after 100 * Sec -> ok end.

@@ -1,0 +1,5 @@
+dynamic supervisor erlang
+https://stackoverflow.com/questions/4842871/erlang-dynamic-supervisor-start-gen-server
+
+rabbitmq
+

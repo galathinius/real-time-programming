@@ -30,7 +30,7 @@ process_events(Events) ->
 one_event(Event) ->
     {_, _, Message} = Event,
     Text = shotgun:parse_event(Message),
-    Data = maps:get(data, Text),
+    #{data := Data} = Text,
     Isjson = jsx:is_json(Data),
     if Isjson == true -> process_map(Data);
        true -> io:fwrite("")
@@ -39,9 +39,9 @@ one_event(Event) ->
 process_map(Amap) ->
     io:format("~p~n", ["\ngot something\n"]),
     TheMap = jsx:decode(Amap),
-    Mess = maps:get(<<"message">>, TheMap),
-    Twt = maps:get(<<"tweet">>, Mess),
-    Text = maps:get(<<"text">>, Twt),
+    #{<<"message">> :=
+	  #{<<"tweet">> := #{<<"text">> := Text}}} =
+	TheMap,
     NotBin = unicode:characters_to_list(Text, utf8),
     Low = string:lowercase(NotBin),
     Chunks = string:tokens(Low, [$\s]),

@@ -2,9 +2,11 @@
 
 -behaviour(gen_server).
 
--export([handle_cast/2, init/1, start_link/0, work/1]).
+-export([handle_cast/2, handle_info/2, init/1,
+	 start_link/0, work/1]).
 
 start_link() ->
+    % io:fwrite("a worker"),
     gen_server:start_link({local, ?MODULE}, ?MODULE, [],
 			  []).
 
@@ -14,6 +16,9 @@ work(Tweet) ->
     gen_server:cast(?MODULE, {tweet, Tweet}), ok.
 
 handle_cast({tweet, Tweet}, State) ->
+    one_event(Tweet), {noreply, State}.
+
+handle_info({Tweet}, State) ->
     one_event(Tweet), {noreply, State}.
 
 one_event(Event) ->
@@ -34,10 +39,7 @@ process_map(Amap) ->
     NotBin = unicode:characters_to_list(Text, utf8),
     Low = string:lowercase(NotBin),
     Chunks = string:tokens(Low, [$\s]),
-    io:format("~p~n", [Chunks]).
-
-loop() ->
-    io:format("~p~n", ["still heree"]), wait(10), loop().
+    io:format("~p~p~n", [self(), Chunks]).
 
 wait(Sec) -> receive  after 100 * Sec -> ok end.
 

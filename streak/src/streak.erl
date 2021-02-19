@@ -14,22 +14,29 @@ main() ->
 
 tweets1() ->
     {ok, Conn} = shotgun:open("localhost", 4000),
-    Options = #{async => true, async_mode => sse},
+    Options = #{async => true, async_mode => sse,
+		handle_event =>
+		    fun (One, Two, Thre) -> one_event(Thre) end},
     {ok, Ref} = shotgun:get(Conn, "/tweets/1", #{},
 			    Options),
     wait(1),
-    Events = shotgun:events(Conn),
-    process_events(Events),
+    % Events = shotgun:events(Conn),
+    % process_events(Events),
     shotgun:close(Conn).
 
+test(One, Two, Thre) ->
+    io:format("~p~p~p~n", [One, Two, Thre]).
+
+process_events([Event]) -> one_event(Event);
 process_events(Events) ->
     [Head | Tail] = Events,
     one_event(Head),
     process_events(Tail).
 
 one_event(Event) ->
-    {_, _, Message} = Event,
-    Text = shotgun:parse_event(Message),
+    % io:format("~p~n", [Event]).
+    % {_, _, Message} = Event,
+    Text = shotgun:parse_event(Event),
     #{data := Data} = Text,
     Isjson = jsx:is_json(Data),
     if Isjson == true -> process_map(Data);

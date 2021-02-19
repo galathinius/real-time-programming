@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%% @doc twitter_stream top level supervisor.
+%% @doc twitter_stream worker supervisor.
 %% @end
 %%%-------------------------------------------------------------------
 
@@ -7,7 +7,7 @@
 
 -behaviour(supervisor).
 
--export([start_link/0, start_worker/3, stop/0,
+-export([start_link/0, start_worker/0, stop/0,
 	 stop_worker/1]).
 
 -export([init/1]).
@@ -18,32 +18,22 @@ start_link() ->
     supervisor:start_link({local, worker_soup}, ?MODULE,
 			  []).
 
-%% sup_flags() = #{strategy => strategy(),         % optional
-%%                 intensity => non_neg_integer(), % optional
-%%                 period => pos_integer()}        % optional
-%% child_spec() = #{id => child_id(),       % mandatory
-%%                  start => mfargs(),      % mandatory
-%%                  restart => restart(),   % optional
-%%                  shutdown => shutdown(), % optional
-%%                  type => worker(),       % optional
-%%                  modules => modules()}   % optional
 init([]) ->
     MaxRestart = 6,
     MaxTime = 3600,
     SupFlags = #{strategy => simple_one_for_one,
 		 intensity => MaxRestart, period => MaxTime},
     ChildSpecs = [#{id => call,
-		    start => {worker, start_link, []},
-		    shutdown => brutal_kill}],
+		    start => {worker, start_link, []}, restart => permanent,
+		    shutdown => 2000, type => worker}],
     {ok, {SupFlags, ChildSpecs}}.
 
-%% internal functions
-
+% worker_soup:start_worker().
 start_worker() ->
-    % ChildSpec = {Name,
-    % 	 {ppool_sup, start_link, [Name, Limit, MFA]}, permanent,
-    % 	 10500, supervisor, [ppool_sup]},
-    supervisor:start_child(worker_soup, ChildSpec).
+    supervisor:start_child(worker_soup, []).
+
+stop_worker(Pid) ->
+    supervisor:terminate_child(worker_soup, Pid).
 
 stop() ->
     case whereis(worker_soup) of

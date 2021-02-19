@@ -1,4 +1,4 @@
--module(twitter_stream).
+-module(streak).
 
 -export([main/0, tweets1/0]).
 
@@ -10,7 +10,7 @@ main() ->
     io:format("~p~n", [Response]),
     shotgun:close(Conn).
 
-% twitter_stream:tweets1().
+% streak:tweets1().
 
 tweets1() ->
     {ok, Conn} = shotgun:open("localhost", 4000),

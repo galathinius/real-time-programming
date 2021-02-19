@@ -19,3 +19,5 @@ printf "\n"
 
 # to exit erlang after function finish:
 # -s init stop 
+
+# erl -sname observer -hidden -setcookie MyCookie -run observer

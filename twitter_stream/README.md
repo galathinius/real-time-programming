@@ -1,14 +1,9 @@
 twitter_stream
 =====
 
-An escript
+An OTP application
 
 Build
 -----
 
-    $ rebar3 escriptize
-
-Run
----
-
-    $ _build/default/bin/twitter_stream
+    $ rebar3 compile

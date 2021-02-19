@@ -23,3 +23,5 @@ https://erlanger.slack.com/
 https://github.com/inaka/worker_pool
 
 https://convert.town/ascii-to-text
+
+https://ru.hexlet.io/courses/erlang_101/lessons/practical_erlang_supervisor/theory_unit

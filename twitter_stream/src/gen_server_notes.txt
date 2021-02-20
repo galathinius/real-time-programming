@@ -1,26 +1,53 @@
--module(router).
-
+%% greeter.erl
+%% Greets people and counts number of times it did so.
+-module(greeter).
 -behaviour(gen_server).
+%% Export API Functions
+-export([start_link/0, greet/1, get_count/0]).
+%% Required gen server callbacks
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
--export([handle_cast/2, init/1, route/1, start_link/0]).
+-record(state, {count::integer()}).
 
+%% Public API
 start_link() ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, [],
-			  []).
+    gen_server:start_link({local, ?MODULE}, ?MODULE, {}, []).
 
-init([]) -> {ok, #{}}.
+greet(Name) ->
+    gen_server:cast(?MODULE, {greet, Name}).
 
-route(Tweets) ->
-    gen_server:cast(?MODULE, {tweets, Tweets}), ok.
+get_count() ->
+    gen_server:call(?MODULE, {get_count}).
 
-handle_cast({tweets, Tweets}, State) ->
-    process_events(Tweets), {noreply, State}.
+%% Private
+init({}) ->
+    {ok, #state{count=0}}.
 
-process_events([Event]) -> worker:work(Event);
-process_events(Events) ->
-    [Head | Tail] = Events,
-    worker:work(Head),
-    process_events(Tail).
+handle_cast({greet, Name}, #state{count = Count} = State) ->
+    io:format("Greetings ~s!~n", [Name]),
+    {noreply, State#state{count = Count + 1}};
+
+handle_cast(Msg, State) ->
+    error_logger:warning_msg("Bad message: ~p~n", [Msg]),
+    {noreply, State}.
+
+handle_call({get_count}, _From, State) ->
+    {reply, {ok, State#state.count}, State};
+
+handle_call(Request, _From, State) ->
+    error_logger:warning_msg("Bad message: ~p~n", [Request]),
+    {reply, {error, unknown_call}, State}.
+
+%% Other gen_server callbacks
+handle_info(Info, State) ->
+    error_logger:warning_msg("Bad message: ~p~n", [Info]),
+    {noreply, State}.
+
+terminate(_Reason, _State) ->
+    ok.
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
 
 % call e blocking, cast e non-bloking, handle info e pentru mesaje primite fara call sau cast
 
@@ -30,24 +57,4 @@ process_events(Events) ->
 % my_api_3(A, B, C) ->
 %     gen_server:call(?MODULE, {msg3, A, B, C}).
 
-% handle_call({msg1, A}, _From, State) ->
-%   ...
-
-% handle_call({msg2, A, B}, _From, State) ->
-%   ...
-
-% handle_call({msg3, A, B, C}, _From, State) ->
-%   ...
-
-% do_something(A, B) ->
-%     gen_server:cast(?MODULE, {do_something, A, B}),
-%     ok.
-%
-% handle_cast({do_something, A, B}, State) ->
-%     NewState = ...
-%     {noreply, NewState};
-
-% handle_info({some_message, A, B}, State) ->
-%     NewState = ...
-%     {noreply, NewState};
 

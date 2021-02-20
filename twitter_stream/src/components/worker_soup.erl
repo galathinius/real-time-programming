@@ -19,6 +19,7 @@ start_link() ->
 			  []).
 
 init([]) ->
+    io:format("~p~p~n", ["soup", self()]),
     MaxRestart = 6,
     MaxTime = 3600,
     SupFlags = #{strategy => simple_one_for_one,
@@ -30,6 +31,7 @@ init([]) ->
 
 % worker_soup:start_worker().
 start_worker() ->
+    % io:format("~p~n", ["starting a worker"]),
     supervisor:start_child(worker_soup, []).
 
 stop_worker(Pid) ->

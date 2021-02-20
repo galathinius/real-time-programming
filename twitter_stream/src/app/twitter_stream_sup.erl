@@ -26,11 +26,10 @@ start_link() ->
 %%                  type => worker(),       % optional
 %%                  modules => modules()}   % optional
 init([]) ->
-    SupFlags = #{strategy => one_for_one, intensity => 0,
-		 period => 1},
-    % Worker = #{id => some_worker,
-    %        start => {worker, start_link, []}, restart => temporary,
-    %        shutdown => 2000, type => worker, modules => [worker]},
+    MaxRestart = 6,
+    MaxTime = 3600,
+    SupFlags = #{strategy => one_for_one,
+		 intensity => MaxRestart, period => MaxTime},
     Soup = #{id => worker_soup,
 	     start => {worker_soup, start_link, []},
 	     restart => permanent, shutdown => 2000,
@@ -38,11 +37,14 @@ init([]) ->
     Router = #{id => router,
 	       start => {router, start_link, []}, restart => permanent,
 	       shutdown => 2000, type => worker, modules => [router]},
+    Scaler = #{id => scaler,
+	       start => {scaler, start_link, []}, restart => permanent,
+	       shutdown => 2000, type => worker, modules => [scaler]},
     Conn = #{id => connection,
 	     start => {connection, start, []}, restart => permanent,
 	     shutdown => 2000, type => worker,
 	     modules => [connection]},
-    ChildSpecs = [Soup, Router, Conn],
+    ChildSpecs = [Soup, Router, Scaler, Conn],
     {ok, {SupFlags, ChildSpecs}}.
 
 %% internal functions

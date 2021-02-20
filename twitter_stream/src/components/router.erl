@@ -2,30 +2,39 @@
 
 -behaviour(gen_server).
 
--export([handle_cast/2, init/1, route/1, start_link/0]).
+-export([fire_worker/1, handle_cast/2, init/1,
+	 register_worker/1, route/1, start_link/0]).
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [],
 			  []).
 
 init([]) ->
-    {ok, Pid1} = worker_soup:start_worker(),
-    {ok, Pid2} = worker_soup:start_worker(),
-    {ok, Pid3} = worker_soup:start_worker(),
-    {ok, #{pids => [Pid1, Pid2, Pid3]}}.
+    io:format("~p~p~n", ["router", self()]),
+    {ok, #{pids => []}}.
 
 route(Tweet) ->
     gen_server:cast(?MODULE, {tweet, Tweet}), ok.
+
+register_worker(Pid) ->
+    gen_server:cast(?MODULE, {hye, Pid}), ok.
+
+fire_worker(Pid) ->
+    gen_server:cast(?MODULE, {bye, Pid}), ok.
 
 handle_cast({tweet, Tweet}, State) ->
     #{pids := Pids} = State,
     [Head | Tail] = Pids,
     Head ! Tweet,
-    NewState = {ok, #{pids => [Tail ++ Head]}},
+    NewState = #{pids => Tail ++ [Head]},
+    {noreply, NewState};
+handle_cast({hye, Pid}, State) ->
+    #{pids := Pids} = State,
+    NewState = #{pids => Pids ++ [Pid]},
+    io:format("~p~p~n", [Pid, NewState]),
+    {noreply, NewState};
+handle_cast({bye, Pid}, State) ->
+    #{pids := Pids} = State,
+    NewPids = lists:delete(Pid, Pids),
+    NewState = #{pids => NewPids},
     {noreply, NewState}.
-
-process_events([Event]) -> worker:work(Event);
-process_events(Events) ->
-    [Head | Tail] = Events,
-    worker:work(Head),
-    process_events(Tail).

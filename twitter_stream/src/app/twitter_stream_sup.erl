@@ -28,7 +28,7 @@ start_link() ->
 init([]) ->
     MaxRestart = 6,
     MaxTime = 3600,
-    SupFlags = #{strategy => one_for_one,
+    SupFlags = #{strategy => one_for_all,
 		 intensity => MaxRestart, period => MaxTime},
     Soup = #{id => worker_soup,
 	     start => {worker_soup, start_link, []},

@@ -31,7 +31,7 @@ handle_info({timeout, _, _}, State) ->
     Pids = supervisor:which_children(worker_soup),
     Total = length(Pids),
     io:format("~p~p~p~n", ["in scaler ", Total, Events]),
-    hire(Events div 100 + 1 - Total),
+    hire(Events div 10 + 1 - Total),
     erlang:start_timer(1000, self(), "timeout"),
     {noreply, State}.
 

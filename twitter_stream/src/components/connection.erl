@@ -18,7 +18,7 @@ main() ->
 % twitter_stream:tweets1().
 
 tweets1() ->
-    scaler:start_some(3),
+    scaler:start_some(10),
     wait(10),
     % loop(),
     % ok.
@@ -28,10 +28,9 @@ tweets1() ->
 		    fun (_, _, Tre) -> router:route(Tre) end},
     {ok, Ref} = shotgun:get(Conn, "/tweets/2", #{},
 			    Options),
-    wait(1000),
+    wait(100),
     shotgun:close(Conn).
 
-% Events = shotgun : events ( Conn ) , router : route ( Events ) ,
 wait(Sec) -> receive  after 10 * Sec -> ok end.
 
 loop() -> wait(4), loop().

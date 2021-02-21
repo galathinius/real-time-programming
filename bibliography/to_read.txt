@@ -1,5 +1,4 @@
-dynamic supervisor erlang
-https://stackoverflow.com/questions/4842871/erlang-dynamic-supervisor-start-gen-server
+http://erlang.org/doc/apps/erts/time_correction.html#Erlang_Monotonic_Time
 
 rabbitmq
 

@@ -31,11 +31,12 @@ handle_info({timeout, _, _}, State) ->
     #{events := Events, previous := Previous} = State,
     WorkerPids = supervisor:which_children(worker_soup),
     TotalWorkers = length(WorkerPids),
-    io:format("~p~p ~p~n",
-	      ["in scaler ", TotalWorkers, Events]),
     Statistics = round(Events * 95 / 100 +
 			 Previous * 5 / 100),
     ToHire = Statistics div 10 + 1 - TotalWorkers,
+    io:format("in scaler: ~nWorkers: ~p~nEvents: ~p "
+	      "~nTo hire: ~p~n",
+	      [TotalWorkers, Events, ToHire]),
     hire(ToHire),
     erlang:start_timer(1000, self(), "timeout"),
     {noreply, #{events => 0, previous => Statistics}}.

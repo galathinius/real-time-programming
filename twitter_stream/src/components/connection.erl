@@ -10,7 +10,6 @@ start(Stream) ->
 
 tweets(Stream) ->
     scaler:start_some(10),
-    wait(10),
     {ok, Conn} = shotgun:open("localhost", 4000),
     Options = #{async => true, async_mode => sse,
 		handle_event =>

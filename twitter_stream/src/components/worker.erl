@@ -24,7 +24,9 @@ detect_panic(Map) ->
     TheMap = unicode:characters_to_list(Map, utf8),
     Index = string:str(TheMap, "panic"),
     if Index > 0 ->
-	   io:format("~p~p~n", ["paniking ", self()]), exit(undef);
+	   io:format("~p~p~n", ["paniking ", self()]),
+	   information:log_panic(),
+	   exit(undef);
        true -> ok
     end.
 
@@ -44,7 +46,10 @@ process_tweet(Text) ->
 			      end,
 			      Chunks)),
     Value = Sum / length(Chunks),
-    io:format("~p~n", [Value]).
+    if Value /= 0 -> information:log_score();
+       true -> ok
+    end,
+    io:format("Score: ~p~n", [Value]).
 
 thinking() ->
     Ra = rand:uniform(),

@@ -21,6 +21,10 @@ init([]) ->
     MaxTime = 100,
     SupFlags = #{strategy => one_for_all,
 		 intensity => MaxRestart, period => MaxTime},
+    Information = #{id => information,
+		    start => {information, start_link, []},
+		    restart => permanent, shutdown => 2000, type => worker,
+		    modules => [information]},
     Soup = #{id => worker_soup,
 	     start => {worker_soup, start_link, []},
 	     restart => permanent, shutdown => 2000,
@@ -41,5 +45,6 @@ init([]) ->
 	      start => {connection, start, [Stream2]},
 	      restart => permanent, shutdown => 2000, type => worker,
 	      modules => [connection]},
-    ChildSpecs = [Soup, Router, Scaler, Conn1, Conn2],
+    ChildSpecs = [Information, Soup, Router, Scaler, Conn1,
+		  Conn2],
     {ok, {SupFlags, ChildSpecs}}.

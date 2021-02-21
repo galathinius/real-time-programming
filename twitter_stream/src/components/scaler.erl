@@ -2,8 +2,8 @@
 
 -behaviour(gen_server).
 
--export([add_event/0, handle_cast/2, handle_info/2,
-	 init/1, start_link/0, start_some/1]).
+-export([handle_cast/2, handle_info/2, init/1,
+	 start_link/0, start_some/1]).
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [],
@@ -12,31 +12,28 @@ start_link() ->
 init([]) ->
     io:format("~p~p~n", ["scaler", self()]),
     erlang:start_timer(1000, self(), "timeout"),
-    {ok, #{events => 0, previous => 0}}.
-
-add_event() -> gen_server:cast(?MODULE, {tweet}), ok.
+    {ok, #{previous => 0}}.
 
 start_some(Count) ->
     gen_server:cast(?MODULE, {hire, Count}).
 
-handle_cast({tweet}, State) ->
-    #{events := Events, previous := Previous} = State,
-    NewState = #{events => Events + 1,
-		 previous => Previous},
-    {noreply, NewState};
 handle_cast({hire, Count}, State) ->
     hire(Count), {noreply, State}.
 
 handle_info({timeout, _, _}, State) ->
-    #{events := Events, previous := Previous} = State,
+    #{previous := Previous} = State,
+    #{events := Events, panics := Panics,
+      actual_scores := Scores} =
+	information:get_info(),
     WorkerPids = supervisor:which_children(worker_soup),
     TotalWorkers = length(WorkerPids),
     Statistics = round(Events * 95 / 100 +
 			 Previous * 5 / 100),
     ToHire = Statistics div 10 + 1 - TotalWorkers,
-    io:format("in scaler: ~nWorkers: ~p~nEvents: ~p "
-	      "~nTo hire: ~p~n",
-	      [TotalWorkers, Events, ToHire]),
+    io:format("in scaler: ~nPanics: ~p~nActual scores: "
+	      "~p~nEvents: ~p~nWorkers: ~p ~nTo hire: "
+	      "~p~n",
+	      [Panics, Scores, Events, TotalWorkers, ToHire]),
     hire(ToHire),
     erlang:start_timer(1000, self(), "timeout"),
     {noreply, #{events => 0, previous => Statistics}}.

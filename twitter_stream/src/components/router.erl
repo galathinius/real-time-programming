@@ -13,7 +13,7 @@ init([]) ->
     {ok, #{current => 0}}.
 
 route(Tweet) ->
-    scaler:add_event(),
+    information:log_event(),
     gen_server:cast(?MODULE, {tweet, Tweet}),
     ok.
 

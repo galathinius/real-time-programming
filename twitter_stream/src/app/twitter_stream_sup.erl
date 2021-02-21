@@ -16,18 +16,9 @@
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-%% sup_flags() = #{strategy => strategy(),         % optional
-%%                 intensity => non_neg_integer(), % optional
-%%                 period => pos_integer()}        % optional
-%% child_spec() = #{id => child_id(),       % mandatory
-%%                  start => mfargs(),      % mandatory
-%%                  restart => restart(),   % optional
-%%                  shutdown => shutdown(), % optional
-%%                  type => worker(),       % optional
-%%                  modules => modules()}   % optional
 init([]) ->
-    MaxRestart = 6,
-    MaxTime = 3600,
+    MaxRestart = 2,
+    MaxTime = 100,
     SupFlags = #{strategy => one_for_all,
 		 intensity => MaxRestart, period => MaxTime},
     Soup = #{id => worker_soup,
@@ -40,12 +31,15 @@ init([]) ->
     Scaler = #{id => scaler,
 	       start => {scaler, start_link, []}, restart => permanent,
 	       shutdown => 2000, type => worker, modules => [scaler]},
-    Conn = #{id => connection,
-	     start => {connection, start, []}, restart => permanent,
-	     shutdown => 2000, type => worker,
-	     modules => [connection]},
-    ChildSpecs = [Soup, Router, Scaler, Conn],
+    Stream1 = "/tweets/1",
+    Conn1 = #{id => conn1,
+	      start => {connection, start, [Stream1]},
+	      restart => permanent, shutdown => 2000, type => worker,
+	      modules => [connection]},
+    Stream2 = "/tweets/2",
+    Conn2 = #{id => conn2,
+	      start => {connection, start, [Stream2]},
+	      restart => permanent, shutdown => 2000, type => worker,
+	      modules => [connection]},
+    ChildSpecs = [Soup, Router, Scaler, Conn1, Conn2],
     {ok, {SupFlags, ChildSpecs}}.
-
-%% internal functions
-

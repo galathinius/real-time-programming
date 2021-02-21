@@ -1,11 +1,23 @@
 -module(connection).
 
--export([start/0, stop/1]).
+-export([start/1, stop/1]).
 
-start() ->
-    {Pid, Ref} = spawn_monitor(fun () -> tweets1() end),
+start(Stream) ->
+    {Pid, _Ref} = spawn_monitor(fun () -> tweets(Stream)
+				end),
     io:format("~p~p~n", ["started conn", Pid]),
     {ok, Pid}.
+
+tweets(Stream) ->
+    scaler:start_some(10),
+    wait(10),
+    {ok, Conn} = shotgun:open("localhost", 4000),
+    Options = #{async => true, async_mode => sse,
+		handle_event =>
+		    fun (_, _, Tre) -> router:route(Tre) end},
+    {ok, _Ref} = shotgun:get(Conn, Stream, #{}, Options),
+    wait(10000),
+    shotgun:close(Conn).
 
 main() ->
     Url = "localhost",
@@ -15,24 +27,6 @@ main() ->
     io:format("~p~n", [Response]),
     shotgun:close(Conn).
 
-% twitter_stream:tweets1().
-
-tweets1() ->
-    scaler:start_some(10),
-    wait(10),
-    % loop(),
-    % ok.
-    {ok, Conn} = shotgun:open("localhost", 4000),
-    Options = #{async => true, async_mode => sse,
-		handle_event =>
-		    fun (_, _, Tre) -> router:route(Tre) end},
-    {ok, Ref} = shotgun:get(Conn, "/tweets/2", #{},
-			    Options),
-    wait(100),
-    shotgun:close(Conn).
-
-wait(Sec) -> receive  after 10 * Sec -> ok end.
-
-loop() -> wait(4), loop().
+wait(Units) -> receive  after 10 * Units -> ok end.
 
 stop(_State) -> ok.

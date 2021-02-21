@@ -21,7 +21,6 @@ handle_cast({tweet, Tweet}, State) ->
     Pids = supervisor:which_children(worker_soup),
     #{current := Current} = State,
     Total = length(Pids),
-    % io:format("~p~p~n", ["pids", Pids]),
     {_, Worker, _, _} = lists:nth(Current rem Total + 1,
 				  Pids),
     Worker ! Tweet,

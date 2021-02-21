@@ -7,8 +7,7 @@
 
 -behaviour(supervisor).
 
--export([start_link/0, start_worker/0, stop/0,
-	 stop_worker/1]).
+-export([start_link/0, start_worker/0, stop_worker/1]).
 
 -export([init/1]).
 
@@ -29,16 +28,8 @@ init([]) ->
 		    shutdown => 2000, type => worker}],
     {ok, {SupFlags, ChildSpecs}}.
 
-% worker_soup:start_worker().
 start_worker() ->
-    % io:format("~p~n", ["starting a worker"]),
     supervisor:start_child(worker_soup, []).
 
 stop_worker(Pid) ->
     supervisor:terminate_child(worker_soup, Pid).
-
-stop() ->
-    case whereis(worker_soup) of
-      P when is_pid(P) -> exit(P, kill);
-      _ -> ok
-    end.

@@ -6,8 +6,7 @@
 
 start_link() -> gen_server:start_link(?MODULE, [], []).
 
-init([]) ->
-    io:format("~p~p~n", ["a worker ", self()]), {ok, #{}}.
+init([]) -> {ok, #{}}.
 
 handle_info(Tweet, State) ->
     one_event(Tweet), {noreply, State}.
@@ -44,9 +43,8 @@ process_tweet(Text) ->
 				      emotional_score:get_score(Word)
 			      end,
 			      Chunks)),
-    Value = Sum / length(Chunks).
-
-    % io:format("~p : ~p~n", [NotBin, Value]).
+    Value = Sum / length(Chunks),
+    io:format("~p~n", [Value]).
 
 thinking() ->
     Ra = rand:uniform(),

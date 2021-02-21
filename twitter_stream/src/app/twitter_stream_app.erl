@@ -12,7 +12,4 @@
 start(_StartType, _StartArgs) ->
     twitter_stream_sup:start_link().
 
-stop(_State) ->
-    ok.
-
-%% internal functions
+stop(_State) -> ok.

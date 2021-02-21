@@ -30,23 +30,16 @@ handle_info({timeout, _, _}, State) ->
     #{events := Events} = State,
     Pids = supervisor:which_children(worker_soup),
     Total = length(Pids),
-    io:format("~p~p~p~n", ["in scaler ", Total, Events]),
+    io:format("~p~p ~p~n", ["in scaler ", Total, Events]),
     hire(Events div 10 + 1 - Total),
     erlang:start_timer(1000, self(), "timeout"),
-    {noreply, State}.
+    {noreply, #{events => 0}}.
 
 hire(0) -> ok;
-hire(Count) when n > 0 ->
+hire(Count) when Count > 0 ->
     worker_soup:start_worker(), hire(Count - 1);
-hire(Count) when n < 0 ->
+hire(Count) when Count < 0 ->
     [{_, Pid, _, _} | _Forgiven] =
 	supervisor:which_children(worker_soup),
     worker_soup:stop_worker(Pid),
     hire(Count + 1).
-
-% hire_workers(0) -> ok;
-% hire_workers(Count) ->
-%     worker_soup:start_worker(), hire_workers(Count - 1).
-
-% kill_one(Pid) -> worker_soup:stop_worker(Pid).
-

@@ -19,20 +19,20 @@ main() ->
 
 tweets1() ->
     scaler:start_some(3),
-    wait(1),
+    wait(10),
     % loop(),
     % ok.
     {ok, Conn} = shotgun:open("localhost", 4000),
     Options = #{async => true, async_mode => sse,
 		handle_event =>
-		    fun (_, _, Thre) -> router:route(Thre) end},
-    {ok, Ref} = shotgun:get(Conn, "/tweets/1", #{},
+		    fun (_, _, Tre) -> router:route(Tre) end},
+    {ok, Ref} = shotgun:get(Conn, "/tweets/2", #{},
 			    Options),
-    wait(1),
+    wait(1000),
     shotgun:close(Conn).
 
 % Events = shotgun : events ( Conn ) , router : route ( Events ) ,
-wait(Sec) -> receive  after 100 * Sec -> ok end.
+wait(Sec) -> receive  after 10 * Sec -> ok end.
 
 loop() -> wait(4), loop().
 

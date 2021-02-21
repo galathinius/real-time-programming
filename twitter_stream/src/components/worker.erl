@@ -2,21 +2,12 @@
 
 -behaviour(gen_server).
 
--export([handle_cast/2, handle_info/2, init/1,
-	 start_link/0, work/1]).
+-export([handle_info/2, init/1, start_link/0]).
 
 start_link() -> gen_server:start_link(?MODULE, [], []).
 
 init([]) ->
-    io:format("~p~p~n", ["a worker ", self()]),
-    router:register_worker(self()),
-    {ok, #{}}.
-
-work(Tweet) ->
-    gen_server:cast(?MODULE, {tweet, Tweet}), ok.
-
-handle_cast({tweet, Tweet}, State) ->
-    one_event(Tweet), {noreply, State}.
+    io:format("~p~p~n", ["a worker ", self()]), {ok, #{}}.
 
 handle_info(Tweet, State) ->
     one_event(Tweet), {noreply, State}.
@@ -25,9 +16,23 @@ one_event(Event) ->
     Text = shotgun:parse_event(Event),
     #{data := Data} = Text,
     Isjson = jsx:is_json(Data),
-    if Isjson == true -> process_map(Data);
-       true -> io:format("~p~n", [""])
+    if Isjson == true -> ok;
+       % process_map(Data);
+       true -> detect_panic(Data)
     end.
+
+detect_panic(Map) ->
+    % io:format("~p~p~n", ["one ", Map]),
+    TheMap = unicode:characters_to_list(Map, utf8),
+    % io:format("~p~p~n", ["two ", TheMap]),
+    Index = string:str(TheMap, "panic"),
+    if Index > 0 ->
+	   io:format("~p~p~n", ["paniking ", self()]), exit(undef);
+       % process_map(Data);
+       true -> ok
+    end.
+
+    % #{<<"message">> := Message} = TheMap,
 
 process_map(Amap) ->
     % io:format("~p~n", ["\ngot something\n"]),
@@ -37,14 +42,8 @@ process_map(Amap) ->
 	TheMap,
     NotBin = unicode:characters_to_list(Text, utf8),
     Low = string:lowercase(NotBin),
-    Chunks = string:tokens(Low, [$\s]),
-    io:format("~p~p~n", [self(), Chunks]).
+    Chunks = string:tokens(Low, [$\s]).
+
+    % io:format("~p~p~n", [self(), Chunks]).
 
 wait(Sec) -> receive  after 100 * Sec -> ok end.
-
-terminate(_Reason, _State) ->
-    router:fire_worker(self()), ok.
-
-code_change(_OldVsn, State, _Extra) -> {ok, State}.
-
-stop(_State) -> ok.

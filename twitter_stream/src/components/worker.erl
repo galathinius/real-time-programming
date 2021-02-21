@@ -29,15 +29,24 @@ detect_panic(Map) ->
        true -> ok
     end.
 
-process_map(Amap) ->
-    TheMap = jsx:decode(Amap),
+process_map(Map) ->
+    Json = jsx:decode(Map),
     #{<<"message">> :=
 	  #{<<"tweet">> := #{<<"text">> := Text}}} =
-	TheMap,
+	Json,
+    process_tweet(Text).
+
+process_tweet(Text) ->
     NotBin = unicode:characters_to_list(Text, utf8),
     Low = string:lowercase(NotBin),
-    Chunks = string:tokens(Low, [$\s]),
-    io:format("~p~p~n", [self(), Chunks]).
+    Chunks = string:tokens(Low, " ,.?!;:/'"),
+    Sum = lists:sum(lists:map(fun (Word) ->
+				      emotional_score:get_score(Word)
+			      end,
+			      Chunks)),
+    Value = Sum / length(Chunks).
+
+    % io:format("~p : ~p~n", [NotBin, Value]).
 
 thinking() ->
     Ra = rand:uniform(),

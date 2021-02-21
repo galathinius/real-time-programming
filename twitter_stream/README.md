@@ -16,7 +16,7 @@ Finally, the first laboratory task itself: Make a streaming Twitter sentiment an
     of a hard time + for the optional speculative execution. The output will be shown as log messages.<br/>
     <br/>
 
-This App parses the tweets and prints the emotional score according to the mapping in (*emotional_score.erl*)[https://github.com/galathinius/real-time-programming/blob/main/twitter_stream/src/components/emotional_score.erl]<br/>
+This App parses the tweets and prints the emotional score according to the mapping in [*emotional_score.erl*](https://github.com/galathinius/real-time-programming/blob/main/twitter_stream/src/components/emotional_score.erl)<br/>
 
 Also, once every second the Scaler shows some statistics for the passed second:
  - Panics - panic messages received from the server, they kill workers
@@ -25,4 +25,4 @@ Also, once every second the Scaler shows some statistics for the passed second:
  - Workers - how many workers are now
  - To hire - how many workers need to be hired, if negative then fired
 
-(Link to a video showing the running application)[https://utm-my.sharepoint.com/:v:/g/personal/anisoara_plesca_isa_utm_md/ESBz-rR9wmxMoooHAHd-8vMB3cdO5qYRDF3uUeaYsDXCvA?e=xDmRiL]
+[Link to a video showing the running application](https://utm-my.sharepoint.com/:v:/g/personal/anisoara_plesca_isa_utm_md/ESBz-rR9wmxMoooHAHd-8vMB3cdO5qYRDF3uUeaYsDXCvA?e=xDmRiL)

@@ -12,7 +12,7 @@ start_link() ->
 init([]) ->
     io:format("~p~p~n", ["scaler", self()]),
     erlang:start_timer(1000, self(), "timeout"),
-    {ok, #{events => 0}}.
+    {ok, #{events => 0, previous => 0}}.
 
 add_event() -> gen_server:cast(?MODULE, {tweet}), ok.
 
@@ -20,20 +20,25 @@ start_some(Count) ->
     gen_server:cast(?MODULE, {hire, Count}).
 
 handle_cast({tweet}, State) ->
-    #{events := Events} = State,
-    NewState = #{events => Events + 1},
+    #{events := Events, previous := Previous} = State,
+    NewState = #{events => Events + 1,
+		 previous => Previous},
     {noreply, NewState};
 handle_cast({hire, Count}, State) ->
     hire(Count), {noreply, State}.
 
 handle_info({timeout, _, _}, State) ->
-    #{events := Events} = State,
-    Pids = supervisor:which_children(worker_soup),
-    Total = length(Pids),
-    io:format("~p~p ~p~n", ["in scaler ", Total, Events]),
-    hire(Events div 10 + 1 - Total),
+    #{events := Events, previous := Previous} = State,
+    WorkerPids = supervisor:which_children(worker_soup),
+    TotalWorkers = length(WorkerPids),
+    io:format("~p~p ~p~n",
+	      ["in scaler ", TotalWorkers, Events]),
+    Statistics = round(Events * 95 / 100 +
+			 Previous * 5 / 100),
+    ToHire = Statistics div 10 + 1 - TotalWorkers,
+    hire(ToHire),
     erlang:start_timer(1000, self(), "timeout"),
-    {noreply, #{events => 0}}.
+    {noreply, #{events => 0, previous => Statistics}}.
 
 hire(0) -> ok;
 hire(Count) when Count > 0 ->

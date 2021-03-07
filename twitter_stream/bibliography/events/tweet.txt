@@ -1,7 +1,3 @@
-<<"data: {\"message\": panic}">>
-<<"event: \"message\"">>
-<<"event: \"message\"">>
-<<"data: {\"message\": panic}">>
 
 {\"message\": 
     {\"tweet\": 

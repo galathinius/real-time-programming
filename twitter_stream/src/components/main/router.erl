@@ -18,11 +18,15 @@ route(Tweet) ->
     ok.
 
 handle_cast({tweet, Tweet}, State) ->
-    Pids = supervisor:which_children(emotional_soup),
     #{current := Current} = State,
+    send_to_worker(emotional_soup, Current, Tweet),
+    send_to_worker(engagement_soup, Current, Tweet),
+    NewState = #{current => Current + 1},
+    {noreply, NewState}.
+
+send_to_worker(Soup, Current, Tweet) ->
+    Pids = supervisor:which_children(Soup),
     Total = length(Pids),
     {_, Worker, _, _} = lists:nth(Current rem Total + 1,
 				  Pids),
-    Worker ! Tweet,
-    NewState = #{current => Current + 1},
-    {noreply, NewState}.
+    Worker ! Tweet.

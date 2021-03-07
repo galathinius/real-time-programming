@@ -39,7 +39,7 @@
             \"profile_sidebar_fill_color\":\"DDEEF6\",
             \"default_profile\":true,
             \"following\":null,
-            \"followers_count\":2,
+--->        \"followers_count\":2,
             \"friends_count\":0,
             \"id_str\":\"715561644282232832\",
             \"protected\":false
@@ -48,11 +48,11 @@
         \"timestamp_ms\":\"1461008002658\",
 ---->   \"text\":\"Playing with girlfriend big fat bubble butt ass https://t.co/sil7IA7VIt\",
         \"source\":\"<a href=\\\"http://twitter.com\\\" rel=\\\"nofollow\\\">Twitter Web Client</a>\",
-        \"retweeted\":false,
-        \"retweet_count\":0,
+   >    \"retweeted\":false,
+--->    \"retweet_count\":0,
         \"possibly_sensitive\":false,
         \"place\":null,
-->      \"lang\":\"en\",
+        \"lang\":\"en\",
         \"is_quote_status\":false,
         \"in_reply_to_user_id_str\":null,
         \"in_reply_to_user_id\":null,
@@ -64,7 +64,7 @@
         \"geo\":null,
         \"filter_level\":\"low\",
         \"favorited\":false,
-        \"favorite_count\":0,
+--->    \"favorite_count\":0,
         \"entities\":
             {\"user_mentions\":[],
             \"urls\":[

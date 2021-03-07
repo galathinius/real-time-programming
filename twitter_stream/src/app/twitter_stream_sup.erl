@@ -25,11 +25,18 @@ init([]) ->
 		    start => {information, start_link, []},
 		    restart => permanent, shutdown => 2000, type => worker,
 		    modules => [information]},
-    Soup = #{id => worker_soup,
-	     start =>
-		 {worker_soup, start_link, [emotional_soup, emotional_worker]},
-	     restart => permanent, shutdown => 2000,
-	     type => supervisor, modules => [worker_soup]},
+    EmotionalSoup = #{id => emotional_soup,
+		      start =>
+			  {worker_soup, start_link,
+			   [emotional_soup, emotional_worker]},
+		      restart => permanent, shutdown => 2000,
+		      type => supervisor, modules => [worker_soup]},
+    EngagementSoup = #{id => engagement_soup,
+		       start =>
+			   {worker_soup, start_link,
+			    [engagement_soup, engagement_worker]},
+		       restart => permanent, shutdown => 2000,
+		       type => supervisor, modules => [worker_soup]},
     Router = #{id => router,
 	       start => {router, start_link, []}, restart => permanent,
 	       shutdown => 2000, type => worker, modules => [router]},
@@ -46,6 +53,6 @@ init([]) ->
 	      start => {connection, start, [Stream2]},
 	      restart => permanent, shutdown => 2000, type => worker,
 	      modules => [connection]},
-    ChildSpecs = [Information, Soup, Router, Scaler, Conn1,
-		  Conn2],
+    ChildSpecs = [Information, EmotionalSoup,
+		  EngagementSoup, Router, Scaler, Conn1],
     {ok, {SupFlags, ChildSpecs}}.

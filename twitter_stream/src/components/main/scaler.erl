@@ -41,9 +41,17 @@ handle_info({timeout, _, _}, State) ->
 hire(0) -> ok;
 hire(Count) when Count > 0 ->
     supervisor:start_child(emotional_soup, []),
+    supervisor:start_child(engagement_soup, []),
     hire(Count - 1);
 hire(Count) when Count < 0 ->
-    [{_, Pid, _, _} | _Forgiven] =
+    % emotional workers
+    [{_, EmotionalPid, _, _} | _EmotionalForgiven] =
 	supervisor:which_children(emotional_soup),
-    supervisor:terminate_child(emotional_soup, Pid),
+    supervisor:terminate_child(emotional_soup,
+			       EmotionalPid),
+    % engagement workers
+    [{_, EngagementPid, _, _} | _EngagementForgiven] =
+	supervisor:which_children(engagement_soup),
+    supervisor:terminate_child(engagement_soup,
+			       EngagementPid),
     hire(Count + 1).

@@ -7,29 +7,23 @@
 
 -behaviour(supervisor).
 
--export([start_link/0, start_worker/0, stop_worker/1]).
+-export([start_link/2]).
 
 -export([init/1]).
 
 -define(SERVER, ?MODULE).
 
-start_link() ->
-    supervisor:start_link({local, worker_soup}, ?MODULE,
-			  []).
+start_link(SupName, WorkerName) ->
+    supervisor:start_link({local, SupName}, ?MODULE,
+			  [WorkerName]).
 
-init([]) ->
+init([Worker]) ->
     io:format("~p~p~n", ["soup", self()]),
     MaxRestart = 6,
     MaxTime = 3600,
     SupFlags = #{strategy => simple_one_for_one,
 		 intensity => MaxRestart, period => MaxTime},
     ChildSpecs = [#{id => call,
-		    start => {worker, start_link, []}, restart => permanent,
+		    start => {Worker, start_link, []}, restart => permanent,
 		    shutdown => 2000, type => worker}],
     {ok, {SupFlags, ChildSpecs}}.
-
-start_worker() ->
-    supervisor:start_child(worker_soup, []).
-
-stop_worker(Pid) ->
-    supervisor:terminate_child(worker_soup, Pid).

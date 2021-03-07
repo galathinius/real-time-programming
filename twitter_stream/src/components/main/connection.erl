@@ -15,7 +15,7 @@ tweets(Stream) ->
 		handle_event =>
 		    fun (_, _, Tre) -> router:route(Tre) end},
     {ok, _Ref} = shotgun:get(Conn, Stream, #{}, Options),
-    wait(10000),
+    wait(1000),
     shotgun:close(Conn).
 
 main() ->

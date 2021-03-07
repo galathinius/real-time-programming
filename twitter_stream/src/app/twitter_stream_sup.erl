@@ -26,7 +26,8 @@ init([]) ->
 		    restart => permanent, shutdown => 2000, type => worker,
 		    modules => [information]},
     Soup = #{id => worker_soup,
-	     start => {worker_soup, start_link, []},
+	     start =>
+		 {worker_soup, start_link, [emotional_soup, emotional_worker]},
 	     restart => permanent, shutdown => 2000,
 	     type => supervisor, modules => [worker_soup]},
     Router = #{id => router,

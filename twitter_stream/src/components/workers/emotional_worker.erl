@@ -1,4 +1,4 @@
--module(worker).
+-module(emotional_worker).
 
 -behaviour(gen_server).
 

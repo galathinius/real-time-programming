@@ -18,7 +18,7 @@ route(Tweet) ->
     ok.
 
 handle_cast({tweet, Tweet}, State) ->
-    Pids = supervisor:which_children(worker_soup),
+    Pids = supervisor:which_children(emotional_soup),
     #{current := Current} = State,
     Total = length(Pids),
     {_, Worker, _, _} = lists:nth(Current rem Total + 1,

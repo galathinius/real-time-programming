@@ -25,7 +25,7 @@ handle_info({timeout, _, _}, State) ->
     #{events := Events, panics := Panics,
       actual_scores := Scores} =
 	information:get_info(),
-    WorkerPids = supervisor:which_children(worker_soup),
+    WorkerPids = supervisor:which_children(emotional_soup),
     TotalWorkers = length(WorkerPids),
     Statistics = round(Events * 95 / 100 +
 			 Previous * 5 / 100),
@@ -40,9 +40,10 @@ handle_info({timeout, _, _}, State) ->
 
 hire(0) -> ok;
 hire(Count) when Count > 0 ->
-    worker_soup:start_worker(), hire(Count - 1);
+    supervisor:start_child(emotional_soup, []),
+    hire(Count - 1);
 hire(Count) when Count < 0 ->
     [{_, Pid, _, _} | _Forgiven] =
-	supervisor:which_children(worker_soup),
-    worker_soup:stop_worker(Pid),
+	supervisor:which_children(emotional_soup),
+    supervisor:terminate_child(emotional_soup, Pid),
     hire(Count + 1).

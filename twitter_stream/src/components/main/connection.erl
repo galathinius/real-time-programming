@@ -1,6 +1,6 @@
 -module(connection).
 
--export([start/1, stop/1]).
+-export([start/1]).
 
 start(Stream) ->
     {Pid, _Ref} = spawn_monitor(fun () -> tweets(Stream)
@@ -15,7 +15,7 @@ tweets(Stream) ->
 		handle_event =>
 		    fun (_, _, Tre) -> router:route(Tre) end},
     {ok, _Ref} = shotgun:get(Conn, Stream, #{}, Options),
-    wait(1000),
+    functions:wait(1000),
     shotgun:close(Conn).
 
 main() ->
@@ -25,7 +25,3 @@ main() ->
     % {Body, _, _} = Response,
     io:format("~p~n", [Response]),
     shotgun:close(Conn).
-
-wait(Units) -> receive  after 10 * Units -> ok end.
-
-stop(_State) -> ok.

@@ -12,26 +12,15 @@ handle_info(Tweet, State) ->
     one_event(Tweet), {noreply, State}.
 
 one_event(Event) ->
-    thinking(),
-    Text = shotgun:parse_event(Event),
-    #{data := Data} = Text,
-    Isjson = jsx:is_json(Data),
-    if Isjson == true -> process_map(Data);
-       true -> detect_panic(Data)
-    end.
+    functions:thinking(),
+    process_tweet(functions:get_tweet(Event)).
 
-detect_panic(Map) ->
-    TheMap = unicode:characters_to_list(Map, utf8),
-    Index = string:str(TheMap, "panic"),
-    if Index > 0 ->
-	   io:format("~p~p~n", ["paniking ", self()]),
-	   information:log_panic(),
-	   exit(undef);
-       true -> ok
-    end.
-
-process_map(Map) ->
-    Json = jsx:decode(Map),
+process_tweet(ok) -> ok;
+process_tweet(panic) ->
+    io:format("~p~p~n", ["paniking ", self()]),
+    information:log_panic(),
+    exit(undef);
+process_tweet({tweet, Json}) ->
     #{<<"message">> :=
 	  #{<<"tweet">> :=
 		#{<<"retweet_count">> := Retweets,
@@ -44,11 +33,3 @@ get_engagement(Retweets, Favourites, Followers) ->
     Engagement = (Favourites + Retweets) / (Followers + 1),
     io:format("Engagement: ~p~n  ~p ~p ~p~n",
 	      [Engagement, Retweets, Favourites, Followers]).
-
-thinking() ->
-    Ra = rand:uniform(),
-    Int = round(Ra * 100),
-    wait(Int),
-    ok.
-
-wait(Unit) -> receive  after 10 * Unit -> ok end.

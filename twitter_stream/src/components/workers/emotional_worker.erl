@@ -8,23 +8,24 @@ start_link() -> gen_server:start_link(?MODULE, [], []).
 
 init([]) -> {ok, #{}}.
 
-handle_info(Tweet, State) ->
-    one_event(Tweet), {noreply, State}.
+handle_info({Tweet, Id}, State) ->
+    one_event(Tweet, Id), {noreply, State}.
 
-one_event(Event) ->
+one_event(Event, Id) ->
     functions:thinking(),
-    process_tweet(functions:get_tweet(Event)).
+    process_tweet(functions:get_tweet(Event), Id).
 
-process_tweet(ok) -> ok;
-process_tweet(panic) ->
+process_tweet(ok, _Id) -> ok;
+process_tweet(panic, _Id) ->
     io:format("~p~p~n", ["paniking ", self()]),
     information:log_panic(),
     exit(undef);
-process_tweet({tweet, Json}) ->
+process_tweet({tweet, Json}, Id) ->
     #{<<"message">> :=
 	  #{<<"tweet">> := #{<<"text">> := Text}}} =
 	Json,
-    compute_text_score(Text).
+    Score = compute_text_score(Text),
+    io:format("Score: ~p ~n", [Score]).
 
 compute_text_score(Text) ->
     NotBin = unicode:characters_to_list(Text, utf8),
@@ -38,4 +39,4 @@ compute_text_score(Text) ->
     if Value /= 0 -> information:log_score();
        true -> ok
     end,
-    io:format("Score: ~p~n", [Value]).
+    Value.

@@ -8,28 +8,28 @@ start_link() -> gen_server:start_link(?MODULE, [], []).
 
 init([]) -> {ok, #{}}.
 
-handle_info(Tweet, State) ->
-    one_event(Tweet), {noreply, State}.
+handle_info({Tweet, Id}, State) ->
+    one_event(Tweet, Id), {noreply, State}.
 
-one_event(Event) ->
+one_event(Event, Id) ->
     functions:thinking(),
-    process_tweet(functions:get_tweet(Event)).
+    process_tweet(functions:get_tweet(Event), Id).
 
-process_tweet(ok) -> ok;
-process_tweet(panic) ->
+process_tweet(ok, _Id) -> ok;
+process_tweet(panic, _Id) ->
     io:format("~p~p~n", ["paniking ", self()]),
     information:log_panic(),
     exit(undef);
-process_tweet({tweet, Json}) ->
+process_tweet({tweet, Json}, Id) ->
     #{<<"message">> :=
 	  #{<<"tweet">> :=
 		#{<<"retweet_count">> := Retweets,
 		  <<"favorite_count">> := Favourites,
 		  <<"user">> := #{<<"followers_count">> := Followers}}}} =
 	Json,
-    get_engagement(Retweets, Favourites, Followers).
+    Engagement = get_engagement(Retweets, Favourites,
+				Followers),
+    io:format("Engagement: ~p ~n", [Engagement]).
 
 get_engagement(Retweets, Favourites, Followers) ->
-    Engagement = (Favourites + Retweets) / (Followers + 1),
-    io:format("Engagement: ~p~n  ~p ~p ~p~n",
-	      [Engagement, Retweets, Favourites, Followers]).
+    (Favourites + Retweets) / (Followers + 1).

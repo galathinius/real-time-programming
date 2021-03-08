@@ -2,7 +2,7 @@
 
 -behaviour(gen_server).
 
--export([filter/1, handle_cast/2, init/1,
+-export([filter/2, handle_cast/2, init/1,
 	 start_link/0]).
 
 start_link() ->
@@ -11,13 +11,13 @@ start_link() ->
 
 init([]) -> io:format("~p~p~n", ["filter", self()]), ok.
 
-filter(Event) ->
-    gen_server:cast(?MODULE, {event, Event}), ok.
+filter(Event, Id) ->
+    gen_server:cast(?MODULE, {event, Event, Id}), ok.
 
-handle_cast({event, Event}, State) ->
-    send_to_aggregator(functions:get_tweet(Event)),
+handle_cast({event, Event, Id}, State) ->
+    send_to_aggregator(functions:get_tweet(Event), Id),
     {noreply, State}.
 
-send_to_aggregator({tweet, Json}) ->
-    aggregator:get(Json);
-send_to_aggregator(_) -> ok.
+send_to_aggregator({tweet, Json}, Id) ->
+    aggregator:add_tweet(Json, Id);
+send_to_aggregator(_, _) -> ok.

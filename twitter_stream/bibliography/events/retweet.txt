@@ -5,6 +5,11 @@ in
     }
 }
 
+#{<<"message">> := #{<<"tweet">> := Tweet}} = Json,
+    IsRetweet = maps:get(<<"retweeted_status">>, Tweet,
+			 false),
+    io:format("retweet: ~p~n", [IsRetweet]).
+
 #{
     <<"contributors">> => null,
     <<"coordinates">> => null,

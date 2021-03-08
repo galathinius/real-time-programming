@@ -19,7 +19,7 @@ route(Tweet) ->
 
 handle_cast({tweet, Tweet}, State) ->
     #{current := Current} = State,
-    Id = uuid:uuid1(),
+    Id = uuid:to_string(uuid:uuid1()),
     send_to_worker(emotional_soup, Current, Tweet, Id),
     send_to_worker(engagement_soup, Current, Tweet, Id),
     NewState = #{current => Current + 1},

@@ -8,25 +8,30 @@ start_link() -> gen_server:start_link(?MODULE, [], []).
 
 init([]) -> {ok, #{}}.
 
-handle_info({Tweet, Id}, State) ->
-    one_event(Tweet, Id), {noreply, State}.
+handle_info({Tweet, Id1, Id2}, State) ->
+    one_event(Tweet, Id1, Id2), {noreply, State}.
 
-one_event(Event, Id) ->
+one_event(Event, Id1, Id2) ->
     functions:thinking(),
-    process_tweet(functions:get_tweet(Event), Id).
+    process_json(functions:get_json(Event), Id1, Id2).
 
-process_tweet(ok, _Id) -> ok;
-process_tweet(panic, _Id) ->
+process_json(ok, _Id1, _Id2) -> ok;
+process_json(panic, _Id1, _Id2) ->
     io:format("~p~p~n", ["paniking ", self()]),
     information:log_panic(),
     exit(undef);
-process_tweet({tweet, Json}, Id) ->
-    #{<<"message">> :=
-	  #{<<"tweet">> :=
-		#{<<"retweet_count">> := Retweets,
-		  <<"favorite_count">> := Favourites,
-		  <<"user">> := #{<<"followers_count">> := Followers}}}} =
-	Json,
+process_json({tweet, Json}, Id1, Id2) ->
+    Tweet = functions:get_tweet(Json),
+    process_tweet(Tweet, Id1),
+    process_tweet(functions:is_retweet(Tweet), Id2),
+    process_tweet(functions:is_quote_tweet(Tweet), Id2).
+
+process_tweet(false, _Id) -> ok;
+process_tweet(Tweet, Id) ->
+    #{<<"retweet_count">> := Retweets,
+      <<"favorite_count">> := Favourites,
+      <<"user">> := #{<<"followers_count">> := Followers}} =
+	Tweet,
     Engagement = get_engagement(Retweets, Favourites,
 				Followers),
     io:format("Engagement: ~p ~n", [Engagement]),

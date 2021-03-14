@@ -38,7 +38,3 @@ update_state(UpdatedTweet, Id, State, Count)
 
 chek_complete(TweetInfo) ->
     length(maps:keys(TweetInfo)).
-
-% to do :
-%  put them in the supervizor and check if they work
-

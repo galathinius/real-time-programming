@@ -25,7 +25,8 @@ process_tweet({tweet, Json}, Id) ->
 	  #{<<"tweet">> := #{<<"text">> := Text}}} =
 	Json,
     Score = compute_text_score(Text),
-    io:format("Score: ~p ~n", [Score]).
+    io:format("Score: ~p ~n", [Score]),
+    aggregator:add_emotion(Score, Id).
 
 compute_text_score(Text) ->
     NotBin = unicode:characters_to_list(Text, utf8),

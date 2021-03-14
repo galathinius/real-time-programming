@@ -21,6 +21,7 @@ init([]) ->
     MaxTime = 100,
     SupFlags = #{strategy => one_for_all,
 		 intensity => MaxRestart, period => MaxTime},
+    %  main
     Information = #{id => information,
 		    start => {information, start_link, []},
 		    restart => permanent, shutdown => 2000, type => worker,
@@ -53,6 +54,15 @@ init([]) ->
 	      start => {connection, start, [Stream2]},
 	      restart => permanent, shutdown => 2000, type => worker,
 	      modules => [connection]},
+    % data
+    Filter = #{id => filter,
+	       start => {filter, start_link, []}, restart => permanent,
+	       shutdown => 2000, type => worker, modules => [filter]},
+    Aggregator = #{id => aggregator,
+		   start => {aggregator, start_link, []},
+		   restart => permanent, shutdown => 2000, type => worker,
+		   modules => [aggregator]},
     ChildSpecs = [Information, EmotionalSoup,
-		  EngagementSoup, Router, Scaler, Conn1],
+		  EngagementSoup, Filter, Aggregator, Router, Scaler,
+		  Conn1],
     {ok, {SupFlags, ChildSpecs}}.

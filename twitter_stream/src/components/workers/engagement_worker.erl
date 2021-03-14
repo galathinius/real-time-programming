@@ -29,7 +29,8 @@ process_tweet({tweet, Json}, Id) ->
 	Json,
     Engagement = get_engagement(Retweets, Favourites,
 				Followers),
-    io:format("Engagement: ~p ~n", [Engagement]).
+    io:format("Engagement: ~p ~n", [Engagement]),
+    aggregator:add_engagement(Engagement, Id).
 
 get_engagement(Retweets, Favourites, Followers) ->
     (Favourites + Retweets) / (Followers + 1).

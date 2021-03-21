@@ -10,7 +10,7 @@ start_link() ->
 
 init([]) ->
     io:format("~p~p~n", ["router", self()]),
-    publisher:subscribe({?MODULE, route}),
+    publisher:subscribe({?MODULE, route, []}),
     {ok, #{current => 0}}.
 
 route(Tweet) ->

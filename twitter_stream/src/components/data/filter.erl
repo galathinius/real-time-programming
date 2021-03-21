@@ -11,7 +11,7 @@ start_link() ->
 
 init([]) ->
     io:format("~p~p~n", ["filter", self()]),
-    publisher:subscribe({?MODULE, add_event}),
+    publisher:subscribe({?MODULE, add_event, []}),
     {ok, #{}}.
 
 add_event({Event, Id1, Id2}) ->

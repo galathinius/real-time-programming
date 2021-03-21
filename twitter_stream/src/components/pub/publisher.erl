@@ -33,6 +33,6 @@ handle_cast({sub, Client}, State) ->
 send([], Event) -> ok;
 send(Subs, Event) ->
     [Sub | Others] = Subs,
-    {Module, Function} = Sub,
-    Module:Function(Event),
+    {Module, Function, Arguments} = Sub,
+    erlang:apply(Module, Function, Arguments ++ [Event]),
     send(Others, Event).

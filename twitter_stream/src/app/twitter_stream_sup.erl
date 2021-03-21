@@ -37,9 +37,17 @@ init([]) ->
 			    [engagement_soup, engagement_worker]},
 		       restart => permanent, shutdown => 2000,
 		       type => supervisor},
-    Router = #{id => router,
-	       start => {router, start_link, []}, restart => permanent,
-	       shutdown => 2000, type => worker},
+    RouterEmotional = #{id => router_emotional,
+			start =>
+			    {router, start_link,
+			     [emotion_router, emotional_soup]},
+			restart => permanent, shutdown => 2000, type => worker},
+    RouterEngagement = #{id => router_engagement,
+			 start =>
+			     {router, start_link,
+			      [engagement_router, engagement_soup]},
+			 restart => permanent, shutdown => 2000,
+			 type => worker},
     Scaler = #{id => scaler,
 	       start => {scaler, start_link, []}, restart => permanent,
 	       shutdown => 2000, type => worker},
@@ -60,5 +68,6 @@ init([]) ->
 		restart => permanent, shutdown => 2000,
 		type => supervisor},
     ChildSpecs = [Publisher, Information, EmotionalSoup,
-		  EngagementSoup, DataSup, Router, Scaler, Conn1],
+		  EngagementSoup, DataSup, RouterEmotional,
+		  RouterEngagement, Scaler, Conn1],
     {ok, {SupFlags, ChildSpecs}}.

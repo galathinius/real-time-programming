@@ -21,16 +21,21 @@ add_emotion(Score, Id) ->
 add_engagement(Score, Id) ->
     gen_server:cast(?MODULE, {engagement_score, Score, Id}).
 
-handle_cast({Field, Tweet, Id}, State) ->
+handle_cast({Field, Value, Id}, State) ->
+    % get the info we have about the tweet, if nothing then  empty map
     TweetInfo = maps:get(Id, State, #{}),
-    UpdatedTweet = maps:put(Field, Tweet, TweetInfo),
+    % add the information we just got to the tweet
+    UpdatedTweet = maps:put(Field, Value, TweetInfo),
+    % update state
     NewState = update_state(UpdatedTweet, Id, State,
 			    chek_complete(UpdatedTweet)),
+    % return new state
     {noreply, NewState}.
 
 update_state(UpdatedTweet, Id, State, 3) ->
     % sink:add_tweet(UpdatedTweet, Id),
-    io:format("agregated: ~p ~n", [UpdatedTweet]),
+    % io:format("agregated: ~p ~n", [UpdatedTweet]),
+    information_transformer:add_event(UpdatedTweet, Id),
     maps:remove(Id, State);
 update_state(UpdatedTweet, Id, State, Count)
     when Count < 3 ->

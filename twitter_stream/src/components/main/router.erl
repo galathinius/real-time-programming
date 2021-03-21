@@ -10,18 +10,14 @@ start_link() ->
 
 init([]) ->
     io:format("~p~p~n", ["router", self()]),
+    publisher:subscribe({?MODULE, route}),
     {ok, #{current => 0}}.
 
 route(Tweet) ->
-    information:log_event(),
-    gen_server:cast(?MODULE, {tweet, Tweet}),
-    ok.
+    gen_server:cast(?MODULE, {tweet, Tweet}), ok.
 
-handle_cast({tweet, Tweet}, State) ->
+handle_cast({tweet, {Tweet, Id1, Id2}}, State) ->
     #{current := Current} = State,
-    Id1 = uuid:to_string(uuid:uuid1()),
-    Id2 = uuid:to_string(uuid:uuid1()),
-    filter:add_event(Tweet, Id1, Id2),
     send_to_worker(emotional_soup, Current, Tweet, Id1,
 		   Id2),
     send_to_worker(engagement_soup, Current, Tweet, Id1,

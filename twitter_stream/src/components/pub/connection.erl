@@ -13,7 +13,7 @@ tweets(Stream) ->
     {ok, Conn} = shotgun:open("localhost", 4000),
     Options = #{async => true, async_mode => sse,
 		handle_event =>
-		    fun (_, _, Tre) -> router:route(Tre) end},
+		    fun (_, _, Tre) -> publisher:publish(Tre) end},
     {ok, _Ref} = shotgun:get(Conn, Stream, #{}, Options),
     functions:wait(1000),
     shotgun:close(Conn).

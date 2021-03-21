@@ -3,7 +3,7 @@
 -behaviour(gen_server).
 
 -export([get_info/0, handle_call/3, handle_cast/2,
-	 init/1, log_event/0, log_panic/0, log_score/0,
+	 init/1, log_event/1, log_panic/0, log_score/0,
 	 start_link/0]).
 
 start_link() ->
@@ -12,9 +12,10 @@ start_link() ->
 
 init([]) ->
     io:format("~p~p~n", ["information", self()]),
+    publisher:subscribe({?MODULE, log_event}),
     {ok, #{events => 0, panics => 0, actual_scores => 0}}.
 
-log_event() -> gen_server:cast(?MODULE, {tweet}).
+log_event(_) -> gen_server:cast(?MODULE, {tweet}).
 
 log_panic() -> gen_server:cast(?MODULE, {panic}).
 

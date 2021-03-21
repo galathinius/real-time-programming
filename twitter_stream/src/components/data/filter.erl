@@ -2,7 +2,7 @@
 
 -behaviour(gen_server).
 
--export([add_event/3, handle_cast/2, init/1,
+-export([add_event/1, handle_cast/2, init/1,
 	 start_link/0]).
 
 start_link() ->
@@ -10,9 +10,11 @@ start_link() ->
 			  []).
 
 init([]) ->
-    io:format("~p~p~n", ["filter", self()]), {ok, #{}}.
+    io:format("~p~p~n", ["filter", self()]),
+    publisher:subscribe({?MODULE, add_event}),
+    {ok, #{}}.
 
-add_event(Event, Id1, Id2) ->
+add_event({Event, Id1, Id2}) ->
     gen_server:cast(?MODULE, {event, Event, Id1, Id2}), ok.
 
 handle_cast({event, Event, Id1, Id2}, State) ->

@@ -19,7 +19,7 @@ process_json(ok, _Id1, _Id2) -> ok;
 process_json(panic, _Id1, _Id2) ->
     io:format("~p~p~n", ["paniking ", self()]),
     information:log_panic(),
-    exit(undef);
+    exit(normal);
 process_json({tweet, Json}, Id1, Id2) ->
     Tweet = functions:get_tweet(Json),
     process_tweet(Tweet, Id1),

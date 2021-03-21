@@ -1,23 +1,30 @@
--module(publisher).
+-module(event_publisher).
 
 -behaviour(gen_server).
 
--export([handle_cast/2, init/1, publish/1, start_link/0,
-	 subscribe/1]).
+-export([handle_cast/2,
+         init/1,
+         publish/1,
+         start_link/0,
+         subscribe/1]).
 
 start_link() ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, [],
-			  []).
+    gen_server:start_link({local, ?MODULE},
+                          ?MODULE,
+                          [],
+                          []).
 
 init([]) ->
     io:format("~p~p~n", ["publisher", self()]),
     {ok, #{subscribers => []}}.
 
 publish(Event) ->
-    gen_server:cast(?MODULE, {pub, Event}), ok.
+    gen_server:cast(?MODULE, {pub, Event}),
+    ok.
 
 subscribe(Client) ->
-    gen_server:cast(?MODULE, {sub, Client}), ok.
+    gen_server:cast(?MODULE, {sub, Client}),
+    ok.
 
 handle_cast({pub, Event}, State) ->
     #{subscribers := Subs} = State,

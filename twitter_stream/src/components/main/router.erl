@@ -13,7 +13,7 @@ start_link(SelfName, WorkerSoup) ->
 init([SelfName, WorkerSoup]) ->
     io:format("~p~p~n", ["router", self()]),
 
-    publisher:subscribe({?MODULE, route, [SelfName]}),
+    event_publisher:subscribe({?MODULE, route, [SelfName]}),
     {ok, #{current => 0, supervisor => WorkerSoup}}.
 
 route(SelfName, Tweet) ->

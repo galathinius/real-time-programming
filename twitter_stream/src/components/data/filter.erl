@@ -2,20 +2,25 @@
 
 -behaviour(gen_server).
 
--export([add_event/1, handle_cast/2, init/1,
-	 start_link/0]).
+-export([add_event/1,
+         handle_cast/2,
+         init/1,
+         start_link/0]).
 
 start_link() ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, [],
-			  []).
+    gen_server:start_link({local, ?MODULE},
+                          ?MODULE,
+                          [],
+                          []).
 
 init([]) ->
     io:format("~p~p~n", ["filter", self()]),
-    publisher:subscribe({?MODULE, add_event, []}),
+    event_publisher:subscribe({?MODULE, add_event, []}),
     {ok, #{}}.
 
 add_event({Event, Id1, Id2}) ->
-    gen_server:cast(?MODULE, {event, Event, Id1, Id2}), ok.
+    gen_server:cast(?MODULE, {event, Event, Id1, Id2}),
+    ok.
 
 handle_cast({event, Event, Id1, Id2}, State) ->
     process_json(functions:get_json(Event), Id1, Id2),
@@ -26,7 +31,7 @@ process_json({tweet, Json}, Id1, Id2) ->
     send_to_aggregator(Tweet, Id1),
     send_to_aggregator(functions:is_retweet(Tweet), Id2),
     send_to_aggregator(functions:is_quote_tweet(Tweet),
-		       Id2);
+                       Id2);
 process_json(_, _, _) -> ok.
 
 send_to_aggregator(false, _Id) -> ok;

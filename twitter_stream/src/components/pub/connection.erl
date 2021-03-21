@@ -4,7 +4,7 @@
 
 start(Stream) ->
     {Pid, _Ref} = spawn_monitor(fun () -> tweets(Stream)
-				end),
+                                end),
     io:format("~p~p~n", ["started conn", Pid]),
     {ok, Pid}.
 
@@ -12,8 +12,8 @@ tweets(Stream) ->
     scaler:start_some(10),
     {ok, Conn} = shotgun:open("localhost", 4000),
     Options = #{async => true, async_mode => sse,
-		handle_event =>
-		    fun (_, _, Tre) -> publisher:publish(Tre) end},
+                handle_event =>
+                    fun (_, _, Tre) -> event_publisher:publish(Tre) end},
     {ok, _Ref} = shotgun:get(Conn, Stream, #{}, Options),
     functions:wait(1000),
     shotgun:close(Conn).

@@ -12,7 +12,7 @@ start_link() ->
 
 init([]) ->
     io:format("~p~p~n", ["information", self()]),
-    publisher:subscribe({?MODULE, log_event, []}),
+    event_publisher:subscribe({?MODULE, log_event, []}),
     {ok, #{events => 0, panics => 0, actual_scores => 0}}.
 
 log_event(_) -> gen_server:cast(?MODULE, {tweet}).

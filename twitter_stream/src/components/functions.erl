@@ -1,7 +1,12 @@
 -module(functions).
 
--export([get_json/1, get_tweet/1, is_quote_tweet/1,
-	 is_retweet/1, thinking/0, wait/1]).
+-export([get_json/1,
+         get_tweet/1,
+         is_quote_tweet/1,
+         is_retweet/1,
+         send_to_subscribers/2,
+         thinking/0,
+         wait/1]).
 
 get_json(Event) ->
     Text = shotgun:parse_event(Event),
@@ -23,15 +28,14 @@ get_tweet(Json) ->
     Tweet.
 
 is_retweet(Tweet) ->
-    IsRetweet = maps:get(<<"retweeted_status">>, Tweet,
-			 false),
+    IsRetweet = maps:get(<<"retweeted_status">>,
+                         Tweet,
+                         false),
     IsRetweet.
 
 is_quote_tweet(Tweet) ->
     IsQuote = maps:get(<<"quoted_status">>, Tweet, false),
     IsQuote.
-
-% quoted_status
 
 wait(Units) -> receive  after 10 * Units -> ok end.
 
@@ -40,3 +44,10 @@ thinking() ->
     Int = round(Ra * 100),
     wait(Int),
     ok.
+
+send_to_subscribers([], _Event) -> ok;
+send_to_subscribers(Subs, Event) ->
+    [Sub | Others] = Subs,
+    {Module, Function, Arguments} = Sub,
+    erlang:apply(Module, Function, Arguments ++ [Event]),
+    send_to_subscribers(Others, Event).

@@ -30,16 +30,9 @@ handle_cast({pub, Event}, State) ->
     #{subscribers := Subs} = State,
     Id1 = uuid:to_string(uuid:uuid1()),
     Id2 = uuid:to_string(uuid:uuid1()),
-    send(Subs, {Event, Id1, Id2}),
+    functions:send_to_subscribers(Subs, {Event, Id1, Id2}),
     {noreply, State};
 handle_cast({sub, Client}, State) ->
     #{subscribers := Subs} = State,
     NewState = #{subscribers => Subs ++ [Client]},
     {noreply, NewState}.
-
-send([], Event) -> ok;
-send(Subs, Event) ->
-    [Sub | Others] = Subs,
-    {Module, Function, Arguments} = Sub,
-    erlang:apply(Module, Function, Arguments ++ [Event]),
-    send(Others, Event).

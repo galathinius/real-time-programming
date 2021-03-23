@@ -1,28 +1,89 @@
 # twitter_stream
 <br/><br/>
-This is an Erlang OTP Application that solves the following task:<br/>
-Finally, the first laboratory task itself: Make a streaming Twitter sentiment analysis system<br/>
-1. You will have to read 2 SSE streams of actual Twitter API tweets in JSON format. <br/>
-    For Elixir use this project to read SSE: https://github.com/cwc/eventsource_ex<br/>
-2. The streams are available from a Docker container, alexburlacu/rtp-server:faf18x, just like Lab 1 PR, only now it's on port 4000<br/>
-3. To make things interesting, the rate of messages varies by up to an order of magnitude, from 100s to 1000s.<br/>
-4. Then, you route the messages to a group of workers that need to be autoscaled, you will need to <br/>
-    scale up the workers (have more) when the rate is high, and less actors when the rate is low<br/>
-5. Route/load balance messages among worker actors in a round robin fashion<br/>
-6. ccasionally you will receive "kill messages", on which you have to crash the workers.<br/>
-7. To continue running the system you will have to have a supervisor/restart policy for the workers.<br/>
-8. The worker actors also must have a random sleep, in the range of 50ms to 500ms, normally distributed. <br/>
-    This is necessary to make the system behave more like a real one + give the router/load balancer a bit <br/>
-    of a hard time + for the optional speculative execution. The output will be shown as log messages.<br/>
+This is an Erlang OTP Application that:
+- continues from the [first part](https://github.com/galathinius/real-time-programming/tree/part1/twitter_stream)
+- solves the following task:<br/>
+Without further ado, the second laboratory task: <br/>
+Loading streaming data into a database. <br/>
+A backpressure story.<br/>
+1. You will have to reuse the first Lab, with some additions.
+2. You will be required to copy the Dynamic Supervisor + Workers that compute the sentiment score <br/>
+and adapt this copy of the system to compute the Engagement Ratio per Tweet. Notice that some tweets <br/>
+ are actually retweets and contain a special field retweet_status​ . You will have to extract it and treat it as<br/>
+  a separate tweet. The Engagement Ratio will be computed as: (#favorites + #retweets) / #followers​ . <br/>
+3. Your workers now print sentiment scores, but for this lab, they will have to send it to a dedicated aggregator <br/>
+actor where the sentiment score, the engagement ratio, and the original tweet will be merged together. <br/>
+Hint: <br/>
+you will need special ids to recombine everything properly because synchronous communication is forbidden.
+4. Finally, you will have to load everything into a database, for example Mongo, and given that writing messages<br/>
+ one by one is not efficient, you will have to implement a backpressure mechanism called adaptive batching​​. <br/>
+ Adaptive batching means that you write/send data in batches if the maximum batch size is reached, for <br/>
+ example 128 elements, or the time is up, for example a window of 200ms is provided, whichever occurs first. <br/>
+ This will be the responsibility of the sink actor(s).
+5. To make things interesting, you will have to split the tweet JSON into users and tweets and keep them <br/>
+in separate collections/tables in the DB.
+6. Of course, don't forget about using actors and supervisors for your system to keep it running.
+<br/>
     <br/>
+What was done:<br/>
 
-This App parses the tweets and prints the emotional score according to the mapping in [*emotional_score.erl*](https://github.com/galathinius/real-time-programming/blob/main/twitter_stream/src/components/emotional_score.erl)<br/>
+![project structure](../assets/lab2_shema.png)
+\* with blue lines are the subscriber relations<br/>
+they are neccesary for the worker pool described below
+<br/><br/>
 
-Also, once every second the Scaler shows some statistics for the passed second:
- - Panics - panic messages received from the server, they kill workers
- - Actual scores - not every tweet has words with emotional scores, that's why this one shows how many tweets had scores different from 0
- - Events - how many events came from the server 
- - Workers - how many workers are now
- - To hire - how many workers need to be hired, if negative then fired
+- This app calculates engagement according to the formula:<br/>
+_(#favorites + #retweets) / (#followers +1)_<br/>
+in order to mittigate division by 0<br/>
+<br/>
+- Besides the retweets, the workers also separate the quote tweets. <br/>
+These are retweets with a comment added by the retweeter.<br/>
+<br/>
+- In order for the aggregator not to get flooded by empty or panic events from the server, <br/>
+the events go through a filter which also separates the retweets and quote tweets.<br/>
 
-[Link to a video showing the running application](https://utm-my.sharepoint.com/:v:/g/personal/anisoara_plesca_isa_utm_md/ESBz-rR9wmxMoooHAHd-8vMB3cdO5qYRDF3uUeaYsDXCvA?e=xDmRiL)
+<br/>
+- As the tweets from the aggregator need to be rearranged before getting to the sink, <br/>
+they had to go through an _information_transformer_ <br/>
+<br/>
+ - Because the _information_transformer_ part can be considered resource intensive, <br/>
+ it was also given a worker pool<br/>
+ <br/>
+
+ Worker pool structure:<br/>
+
+ ![worker pool structure](../assets/worker_pool.png)
+
+On starting the pool superior supervisor, 2 parameters are given:<br/>
+1. the publisher of information that the pool will get information from<br/>
+2. the worker file name<br/>
+<br/>
+Next:<br/>
+- the pool router subscribes to the given information publisher, and on updates, distributes the work<br/>
+- the pool minion scaler subscribes to the main scaler for hiring updates and scales the number of workers accordingly<br/>
+ <br/>
+
+ Now, PubSub:<br/>
+
+  ![pub sub meme](../assets/khajiit_pubsub.jpg)
+  <br/>
+
+  The PubSub pattern was implemented when it was observed that an actor needed to update <br/>
+  multiple other actors of something:
+
+  <br/>
+  First is the event source:<br/>
+As a lot of actors need the events, it was decided that a single router can be easily <br/>
+overwhelmed, so an event publisher was created.<br/>
+Its subscribers are:<br/>
+1. the information actor (just counts them)<br/>
+2. the filter (for the aggregator)<br/>
+3. the emotional router (from the pool)<br/>
+4. the engagement router (from the pool)<br/>
+<br/>
+Second is the main scaler:<br/>
+As there are multiple worker pools (three), and more could be added, it would be redundant to <br/>
+add the code for each one to one scaler, so it was made into a publisher.<br/>
+<br/> 
+Third is a victim of the worker pool API:<br/>
+As the information transformer pool needs a publisher to subscribe to, the aggregator had to <br/>aquire a publisher.

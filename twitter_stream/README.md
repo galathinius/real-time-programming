@@ -27,7 +27,7 @@ in separate collections/tables in the DB.
     <br/>
 What was done:<br/>
 
-![project structure](../assets/lab2_shema.png)
+![project structure](../assets/lab2_shema.png)<br/>
 \* with blue lines are the subscriber relations<br/>
 they are neccesary for the worker pool described below
 <br/><br/>
@@ -52,7 +52,7 @@ they had to go through an _information_transformer_ <br/>
 
  Worker pool structure:<br/>
 
- ![worker pool structure](../assets/worker_pool.png)
+ ![worker pool structure](../assets/worker_pool.png)<br/>
 
 On starting the pool superior supervisor, 2 parameters are given:<br/>
 1. the publisher of information that the pool will get information from<br/>

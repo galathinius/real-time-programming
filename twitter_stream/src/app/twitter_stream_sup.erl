@@ -64,5 +64,6 @@ init([]) ->
                   EmotionalWorkerPool,
                   EngagementWorkerPool,
                   DataSup,
-                  Conn1],
+                  Conn1,
+                  Conn2],
     {ok, {SupFlags, ChildSpecs}}.

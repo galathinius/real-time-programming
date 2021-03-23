@@ -44,7 +44,8 @@ handle_info({timeout, _, _}, State) ->
       actual_scores := Scores} =
         information:get_info(),
     % calculating stats
-    WorkerPids = supervisor:which_children(emotional_soup),
+    WorkerPids =
+        supervisor:which_children(emotional_worker_soup),
     TotalWorkers = length(WorkerPids),
     Statistics = round(Events * 95 / 100 +
                            Previous * 5 / 100),

@@ -9,7 +9,8 @@ start_link() -> gen_server:start_link(?MODULE, [], []).
 init([]) -> {ok, #{}}.
 
 handle_info({Tweet, Id1, Id2}, State) ->
-    one_event(Tweet, Id1, Id2), {noreply, State}.
+    one_event(Tweet, Id1, Id2),
+    {noreply, State}.
 
 one_event(Event, Id1, Id2) ->
     functions:thinking(),
@@ -38,9 +39,9 @@ compute_text_score(Text) ->
     Low = string:lowercase(NotBin),
     Chunks = string:tokens(Low, " ,.?!;:/'"),
     Sum = lists:sum(lists:map(fun (Word) ->
-				      emotional_score:get_score(Word)
-			      end,
-			      Chunks)),
+                                      emotional_score:get_score(Word)
+                              end,
+                              Chunks)),
     Value = Sum / length(Chunks),
     if Value /= 0 -> information:log_score();
        true -> ok

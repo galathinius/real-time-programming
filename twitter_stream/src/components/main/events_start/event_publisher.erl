@@ -28,7 +28,9 @@ subscribe(Client) ->
 
 handle_cast({pub, Event}, State) ->
     #{subscribers := Subs} = State,
+    % one id for the tweet
     Id1 = uuid:to_string(uuid:uuid1()),
+    % another for any retweet or quote tweet
     Id2 = uuid:to_string(uuid:uuid1()),
     functions:send_to_subscribers(Subs, {Event, Id1, Id2}),
     {noreply, State};

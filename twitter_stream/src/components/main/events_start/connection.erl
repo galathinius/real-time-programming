@@ -17,7 +17,9 @@ tweets(Stream) ->
                     fun (_, _, Tre) -> event_publisher:publish(Tre) end},
     {ok, _Ref} = shotgun:get(Conn, Stream, #{}, Options),
     functions:wait(1000),
-    shotgun:close(Conn).
+    tweets(Stream).
+
+    % shotgun:close(Conn).
 
 main() ->
     Url = "localhost",

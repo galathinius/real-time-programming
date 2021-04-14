@@ -22,9 +22,13 @@ init([]) ->
     SupFlags = #{strategy => one_for_all,
                  intensity => MaxRestart, period => MaxTime},
     % children definitions
-    Filter = #{id => filter,
-               start => {filter, start_link, []}, restart => permanent,
-               shutdown => 2000, type => worker},
+    FilterWorkerPool = #{id => filter_pool,
+                         start =>
+                             {pool_sup,
+                              start_link,
+                              [event_publisher, "filter"]},
+                         restart => permanent, shutdown => 2000,
+                         type => supervisor},
     Aggregator = #{id => aggregator,
                    start => {aggregator, start_link, []},
                    restart => permanent, shutdown => 2000, type => worker},
@@ -44,7 +48,7 @@ init([]) ->
                  start => {database, start_link, []},
                  restart => permanent, shutdown => 2000, type => worker},
     % children to start
-    ChildSpecs = [Filter,
+    ChildSpecs = [FilterWorkerPool,
                   Aggregator,
                   AggregatorPub,
                   TransformerWorkerPool,

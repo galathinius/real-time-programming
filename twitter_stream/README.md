@@ -41,6 +41,7 @@ These are retweets with a comment added by the retweeter.<br/>
 <br/>
 - In order for the aggregator not to get flooded by empty or panic events from the server, <br/>
 the events go through a filter which also separates the retweets and quote tweets.<br/>
+*Update: the filter is also a pool<br/> 
 
 <br/>
 - As the tweets from the aggregator need to be rearranged before getting to the sink, <br/>

@@ -2,27 +2,13 @@
 
 -behaviour(gen_server).
 
--export([add_event/1,
-         handle_cast/2,
-         init/1,
-         start_link/0]).
+-export([handle_info/2, init/1, start_link/0]).
 
-start_link() ->
-    gen_server:start_link({local, ?MODULE},
-                          ?MODULE,
-                          [],
-                          []).
+start_link() -> gen_server:start_link(?MODULE, [], []).
 
-init([]) ->
-    io:format("~p~p~n", ["filter", self()]),
-    event_publisher:subscribe({?MODULE, add_event, []}),
-    {ok, #{}}.
+init([]) -> {ok, #{}}.
 
-add_event({Event, Id1, Id2}) ->
-    gen_server:cast(?MODULE, {event, Event, Id1, Id2}),
-    ok.
-
-handle_cast({event, Event, Id1, Id2}, State) ->
+handle_info({Event, Id1, Id2}, State) ->
     process_json(functions:get_json(Event), Id1, Id2),
     {noreply, State}.
 

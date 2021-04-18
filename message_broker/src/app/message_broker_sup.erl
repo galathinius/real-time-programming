@@ -24,7 +24,14 @@ init([]) ->
     %  main
     Table = #{id => table, start => {table, start_link, []},
               restart => permanent, shutdown => 2000, type => worker},
-    ChildSpecs = [Table],
+    TcpServer = #{id => server,
+                  start => {tcp_server, start_link, []},
+                  restart => permanent, shutdown => 2000, type => worker},
+    TcpListenersSup = #{id => listeners_sup,
+                        start => {listening_socket_sup, start_link, []},
+                        restart => permanent, shutdown => 2000,
+                        type => supervisor},
+    ChildSpecs = [Table, TcpListenersSup, TcpServer],
     {ok, {SupFlags, ChildSpecs}}.
 
 %% internal functions

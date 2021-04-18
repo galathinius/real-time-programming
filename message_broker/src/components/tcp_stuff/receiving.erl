@@ -31,35 +31,42 @@ process_message(#{<<"request">> := <<"subscribe">>,
                 ListenSocket, SendSock) ->
     % create id
     Id = uuid:to_string(uuid:uuid1()),
-    % send id
+    tables:add_sub(Id),
+    process_message(#{<<"request">> => <<"subscribe">>,
+                      <<"id">> => <<Id>>, <<"topics">> => Topics},
+                    ListenSocket,
+                    SendSock);
+%
+% subscribe request from already registered client
+process_message(#{<<"request">> := <<"subscribe">>,
+                  <<"id">> := <<Id>>, <<"topics">> := Topics},
+                ListenSocket, SendSock) ->
+    % check id
+    table:check_sub_E(Id),
+    % send id as confirmation
     gen_tcp:send(SendSock, Id),
-    % get topics
-    Topics = table:get_topic_list(),
     % check topics exist
+    TopicsToSub = [Topic
+                   || Topic <- Topics, table:check_topic_E(Topic)],
     % add subscriber to topics
+    table:add_sub_to_topics(Id, TopicsToSub),
+    % wait for another connection
+    % check for bug, if conn is not closed
+    listening_socket:accept(ListenSocket);
+%
+% unsubscribe request
+process_message(#{<<"request">> := <<"unsubscribe">>,
+                  <<"id">> := <<Id>>, <<"topics">> := Topics},
+                ListenSocket, SendSock) ->
+    % check id
+    table:check_sub_E(Id),
+    % send id as confirmation
+    gen_tcp:send(SendSock, Id),
+    % check topics exist
+    TopicsToSub = [Topic
+                   || Topic <- Topics, table:check_topic_E(Topic)],
+    % remove subscriber from topics
+    table:remove_sub_from_topics(Id, TopicsToSub),
     % wait for another connection
     % check for bug, if conn is not closed
     listening_socket:accept(ListenSocket).
-
-%
-% subscribe request from already registered client
-% check id is in list
-% send id
-% gen_tcp:send(SendSock, Id),
-% get topics
-% Topics = table:get_topic_list(),
-% check topics exist
-% add subscriber to topics
-% wait for another connection
-
-%
-% unsubscribe request
-% check id is in list
-% send id
-% gen_tcp:send(SendSock, Id),
-% get topics
-% Topics = table:get_topic_list(),
-% check topics exist
-% remove subscriber to topics
-% wait for another connection
-

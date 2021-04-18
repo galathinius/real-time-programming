@@ -1,11 +1,10 @@
 -module(listening_socket).
 
--export([start_link/1]).
+-export([accept/1, handle_connection/1, start_link/1]).
 
 start_link(ListenSock) ->
     {Pid, _Ref} = spawn_monitor(fun () -> accept(ListenSock)
                                 end),
-    io:format("~p~p~n", ["started conn", Pid]),
     {ok, Pid}.
 
 accept(ListenSocket) ->
@@ -17,7 +16,7 @@ accept(ListenSocket) ->
 handle_connection(ListenSocket) ->
     receive
         {tcp, Socket, Msg} ->
-            io:format("Socket #~p got message: ~p~n",
+            io:format("Socket #~p got message: ~n~p~n",
                       [self(), Msg]),
             receiving:process_message(messages:deserialize(Msg),
                                       ListenSocket,

@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  main-source:
+    image: alexburlacu/rtp-server:faf18x
+
+  twitter-stream:
+    container_name: twitter-stream
+    depends_on:
+      - main-source
+    build:
+      context: ./twitter_stream
+      dockerfile: dockerfile.yml
+    volumes:
+      - ./twitter_stream/src:/stream/src
+    working_dir: /stream
+    tty: true
+    command: rebar3 shell

@@ -11,7 +11,7 @@ start(Stream) ->
 tweets(Stream) ->
     scaler_publisher:start_some(10),
 
-    {ok, Conn} = shotgun:open("localhost", 4000),
+    {ok, Conn} = shotgun:open("main-source", 4000),
     Options = #{async => true, async_mode => sse,
                 handle_event =>
                     fun (_, _, Tre) -> event_publisher:publish(Tre) end},

@@ -2,11 +2,14 @@
 
 -behaviour(gen_server).
 
--export([add_sub_to_topics/2,
+-export([add_sub/1,
+         add_sub_to_topics/2,
          add_topics/1,
+         check_sub_E/1,
+         check_topic_E/1,
+         get_sub_list/0,
          get_subs_of_topic/1,
          get_topic_list/0,
-         handle_call/3,
          handle_cast/2,
          init/1,
          remove_sub_from_topics/2,
@@ -22,7 +25,7 @@ init([]) ->
     io:format("started table ~p~n", [self()]),
     ets:new(subscriptions,
             [bag, named_table, {read_concurrency, true}]),
-    ets:new(topics, [bag, named_table]),
+    ets:new(ids, [bag, named_table]),
     % by default only the table owner can write to it, and everyone can read
     io:format("~p~p~n", ["database", self()]),
     {ok, #{}}.
@@ -45,6 +48,8 @@ remove_sub_from_topics(SubId, Topic) ->
 add_topics(Topic) ->
     gen_server:cast(?MODULE, {add_topic, Topic}).
 
+add_sub(Id) -> gen_server:cast(?MODULE, {add_sub, Id}).
+
 get_subs_of_topic(Topic) ->
     % [[sock1],[sock]]
     % gen_server:call(?MODULE, {get_subs, Topic}).
@@ -53,7 +58,12 @@ get_subs_of_topic(Topic) ->
 get_topic_list() ->
     % [[topic1],[topic2]]
     % gen_server:call(?MODULE, {get_topics}).
-    ets:match(topics, {topic, '$1'}).
+    ets:match(ids, {topic, '$1'}).
+
+get_sub_list() ->
+    % [[topic1],[topic2]]
+    % gen_server:call(?MODULE, {get_topics}).
+    ets:match(ids, {id, '$1'}).
 
 handle_cast({add_sub, Sub, Topics}, State) ->
     [ets:insert(subscriptions, {Topic, Sub})
@@ -64,15 +74,16 @@ handle_cast({remove_sub, SubId, Topics}, State) ->
      || Topic <- Topics],
     {noreply, State};
 handle_cast({add_topic, Topics}, State) ->
-    [ets:insert(topics, {topic, Topic}) || Topic <- Topics],
+    [ets:insert(ids, {topic, Topic}) || Topic <- Topics],
+    {noreply, State};
+handle_cast({add_sub, Id}, State) ->
+    ets:insert(ids, {id, Id}),
     {noreply, State}.
 
-handle_call({get_subs, Topic}, _From, State) ->
-    Subs = ets:match(subscriptions, {Topic, {'_', '$1'}}),
-    {reply, Subs, State};
-handle_call({get_topics}, _From, State) ->
-    Topics = ets:match(topics, {topic, '$1'}),
-    {reply, Topics, State}.
+check_topic_E(Topic) ->
+    lists:member([Topic], get_topic_list()).
+
+check_sub_E(Id) -> lists:member([Id], get_sub_list()).
 
 %
 % testing

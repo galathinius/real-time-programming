@@ -27,7 +27,6 @@ init([]) ->
             [bag, named_table, {read_concurrency, true}]),
     ets:new(ids, [bag, named_table]),
     % by default only the table owner can write to it, and everyone can read
-    io:format("~p~p~n", ["database", self()]),
     {ok, #{}}.
 
 % subs -> [

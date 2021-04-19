@@ -16,7 +16,7 @@ start_link() ->
                           []).
 
 init([]) ->
-    io:format("~p~p~n", ["aggregator", self()]),
+    % io:format("~p~p~n", ["aggregator", self()]),
     {ok, #{}}.
 
 add_tweet(Tweet, Id) ->

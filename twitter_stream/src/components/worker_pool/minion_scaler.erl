@@ -16,8 +16,7 @@ start_link(SelfName, WorkerSoup) ->
                           []).
 
 init([SelfName, WorkerSoup]) ->
-    io:format("~p~p~n", ["minion scaler", self()]),
-
+    % io:format("~p~p~n", ["minion scaler", self()]),
     scaler_publisher:subscribe({?MODULE,
                                 update,
                                 [SelfName]}),

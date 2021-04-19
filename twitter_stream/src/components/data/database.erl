@@ -17,7 +17,7 @@ init([]) ->
     ets:new(users, [set, named_table]),
     ets:new(tweets, [set, named_table]),
     ets:new(relationship, [set, named_table]),
-    io:format("~p~p~n", ["database", self()]),
+    % io:format("~p~p~n", ["database", self()]),
     {ok, #{}}.
 
 % users -> [{id, user}, {id2, user2}, ... ]
@@ -30,7 +30,7 @@ add_events(Events) ->
 
 handle_cast({events, Events}, State) ->
     {Users, Tweets, Relations} = Events,
-    io:format("sink  ~p ~n", [length(Relations)]),
+    % io:format("db  ~p ~n", [length(Relations)]),
     ets:insert(users, Users),
     ets:insert(tweets, Tweets),
     ets:insert(relationship, Relations),

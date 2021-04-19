@@ -16,7 +16,7 @@ start_link() ->
                           []).
 
 init([]) ->
-    io:format("~p~p~n", ["scaler", self()]),
+    % io:format("~p~p~n", ["scaler", self()]),
     erlang:start_timer(1000, self(), "timeout"),
     {ok, #{previous => 0, subscribers => []}}.
 
@@ -52,10 +52,10 @@ handle_info({timeout, _, _}, State) ->
     ToHire = Statistics div 10 + 1 - TotalWorkers,
 
     % posting stats in console
-    io:format("in scaler: ~nPanics: ~p~nActual scores: "
-              "~p~nEvents: ~p~nWorkers: ~p ~nTo hire: "
-              "~p~n",
-              [Panics, Scores, Events, TotalWorkers, ToHire]),
+    % io:format("in scaler: ~nPanics: ~p~nActual scores: "
+    %           "~p~nEvents: ~p~nWorkers: ~p ~nTo hire: "
+    %           "~p~n",
+    %           [Panics, Scores, Events, TotalWorkers, ToHire]),
     % sending number to hire to minions
     functions:send_to_subscribers(Subs, ToHire),
 

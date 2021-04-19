@@ -11,8 +11,7 @@ start_link(SelfName, Source, WorkerSoup) ->
                           []).
 
 init([SelfName, Source, WorkerSoup]) ->
-    io:format("~p~p~n", ["router", self()]),
-
+    % io:format("~p~p~n", ["router", self()]),
     Source:subscribe({?MODULE, route, [SelfName]}),
     {ok, #{current => 0, supervisor => WorkerSoup}}.
 

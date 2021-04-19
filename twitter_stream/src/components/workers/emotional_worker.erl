@@ -31,7 +31,7 @@ process_tweet(false, _Id) -> ok;
 process_tweet(Tweet, Id) ->
     #{<<"text">> := Text} = Tweet,
     Score = compute_text_score(Text),
-    io:format("Score: ~p ~n", [Score]),
+    % io:format("Score: ~p ~n", [Score]),
     aggregator:add_emotion(Score, Id).
 
 compute_text_score(Text) ->

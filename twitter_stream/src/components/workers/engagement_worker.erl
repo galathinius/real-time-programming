@@ -9,7 +9,8 @@ start_link() -> gen_server:start_link(?MODULE, [], []).
 init([]) -> {ok, #{}}.
 
 handle_info({Tweet, Id1, Id2}, State) ->
-    one_event(Tweet, Id1, Id2), {noreply, State}.
+    one_event(Tweet, Id1, Id2),
+    {noreply, State}.
 
 one_event(Event, Id1, Id2) ->
     functions:thinking(),
@@ -31,10 +32,11 @@ process_tweet(Tweet, Id) ->
     #{<<"retweet_count">> := Retweets,
       <<"favorite_count">> := Favourites,
       <<"user">> := #{<<"followers_count">> := Followers}} =
-	Tweet,
-    Engagement = get_engagement(Retweets, Favourites,
-				Followers),
-    io:format("Engagement: ~p ~n", [Engagement]),
+        Tweet,
+    Engagement = get_engagement(Retweets,
+                                Favourites,
+                                Followers),
+    % io:format("Engagement: ~p ~n", [Engagement]),
     aggregator:add_engagement(Engagement, Id).
 
 get_engagement(Retweets, Favourites, Followers) ->

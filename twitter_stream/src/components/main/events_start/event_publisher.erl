@@ -15,7 +15,7 @@ start_link() ->
                           []).
 
 init([]) ->
-    io:format("~p~p~n", ["publisher", self()]),
+    % io:format("~p~p~n", ["publisher", self()]),
     {ok, #{subscribers => []}}.
 
 publish(Event) ->

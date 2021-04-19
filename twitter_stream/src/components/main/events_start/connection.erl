@@ -5,7 +5,7 @@
 start(Stream) ->
     {Pid, _Ref} = spawn_monitor(fun () -> tweets(Stream)
                                 end),
-    io:format("~p~p~n", ["started conn", Pid]),
+    % io:format("~p~p~n", ["started conn", Pid]),
     {ok, Pid}.
 
 tweets(Stream) ->

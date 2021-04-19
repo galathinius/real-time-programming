@@ -19,7 +19,7 @@ start_link(SelfName, WorkerName) ->
                           [WorkerName]).
 
 init([Worker]) ->
-    io:format("~p~p~n", ["soup", self()]),
+    % io:format("~p~p~n", ["soup", self()]),
     MaxRestart = 6,
     MaxTime = 3600,
     SupFlags = #{strategy => simple_one_for_one,

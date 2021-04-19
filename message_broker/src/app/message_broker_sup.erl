@@ -31,7 +31,33 @@ init([]) ->
                         start => {listening_socket_sup, start_link, []},
                         restart => permanent, shutdown => 2000,
                         type => supervisor},
-    ChildSpecs = [Table, TcpListenersSup, TcpServer],
+    TopicDistPool = #{id => topic_distribution,
+                      start =>
+                          {pool_sup,
+                           start_link,
+                           [no_pub, "topic_distribution", 5]},
+                      restart => permanent, shutdown => 2000,
+                      type => supervisor},
+    SubscriberDistPool = #{id => subscriber_distribution,
+                           start =>
+                               {pool_sup,
+                                start_link,
+                                [no_pub, "subscriber_distribution", 5]},
+                           restart => permanent, shutdown => 2000,
+                           type => supervisor},
+    SubscriberSendPool = #{id => subscriber_send,
+                           start =>
+                               {pool_sup,
+                                start_link,
+                                [no_pub, "subscriber_send", 5]},
+                           restart => permanent, shutdown => 2000,
+                           type => supervisor},
+    ChildSpecs = [Table,
+                  TopicDistPool,
+                  SubscriberDistPool,
+                  SubscriberSendPool,
+                  TcpListenersSup,
+                  TcpServer],
     {ok, {SupFlags, ChildSpecs}}.
 
 %% internal functions

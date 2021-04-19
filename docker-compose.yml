@@ -4,10 +4,23 @@ services:
   main-source:
     image: alexburlacu/rtp-server:faf18x
 
+  message-broker:
+    container_name: message-broker
+    depends_on:
+      - main-source
+    build:
+      context: ./message_broker
+      dockerfile: dockerfile.yml
+    volumes:
+      - ./message_broker/src:/broker/src
+    working_dir: /broker
+    tty: true
+    command: rebar3 shell
+
   twitter-stream:
     container_name: twitter-stream
     depends_on:
-      - main-source
+      - message-broker
     build:
       context: ./twitter_stream
       dockerfile: dockerfile.yml

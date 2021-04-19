@@ -58,7 +58,12 @@ init([]) ->
                 start => {data_sup, start_link, []},
                 restart => permanent, shutdown => 2000,
                 type => supervisor},
-    ChildSpecs = [Publisher,
+    % message broker pub
+    MessageBroker = #{id => broker_pub,
+                      start => {broker_pub, start_link, []},
+                      restart => permanent, shutdown => 2000, type => worker},
+    ChildSpecs = [MessageBroker,
+                  Publisher,
                   Information,
                   ScalerPublisher,
                   EmotionalWorkerPool,

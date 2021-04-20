@@ -52,11 +52,13 @@ process_message({[{<<"id">>, Id},
     table:check_sub_E(Id),
     % send id as confirmation
     gen_tcp:send(SendSock, Id),
+    %
     % check topics exist
-    % TopicsToSub = [Topic
-    %                || Topic <- Topics, table:check_topic_E(Topic)],
+    % if the row below is uncommented then subs can only subscribe to existing topics
+    % TopicsToSub = [Topic || Topic <- Topics, table:check_topic_E(Topic)],
+    %
     % add subscriber to topics
-    table:add_sub_to_topics(Id, Topics),
+    table:add_sub_to_topics({Id, SendSock}, Topics),
     % wait for another connection
     % check for bug, if conn is not closed
     listening_socket:accept(ListenSocket);

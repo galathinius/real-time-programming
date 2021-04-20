@@ -8,8 +8,6 @@ start_link() -> gen_server:start_link(?MODULE, [], []).
 
 init([]) -> {ok, #{}}.
 
-handle_info({Data, Subscriber}, State) ->
-    io:format("sendng ~p ~p~n", [Subscriber, Data]),
-    {_, Sock} = Subscriber,
-    gen_tcp:send(Sock, Data),
+handle_info({Data, [Subscriber]}, State) ->
+    gen_tcp:send(Subscriber, Data),
     {noreply, State}.

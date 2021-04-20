@@ -84,7 +84,7 @@ process_message({[{<<"id">>, Id},
 process_message({[{<<"data">>, Data},
                   {<<"topics">>, Topics}]},
                 ListenSocket, SendSock) ->
-    io:format("got a dat mess ~p~n", [self()]),
+    io:format("got a data mess ~p~n", [self()]),
     % idk, send along
     router:route(topic_distribution_router, {Data, Topics}),
     listening_socket:handle_connection(ListenSocket),

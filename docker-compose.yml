@@ -29,3 +29,16 @@ services:
     working_dir: /stream
     tty: true
     command: rebar3 shell
+
+  client1:
+    container_name: client-1
+    depends_on:
+      - twitter-stream
+    build:
+      context: ./client1
+      dockerfile: dockerfile.yml
+    volumes:
+      - ./client1:/client1
+    working_dir: /client1
+    tty: true
+    command: rebar3 shell

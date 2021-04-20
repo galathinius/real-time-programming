@@ -1,0 +1,9 @@
+FROM erlang:latest
+
+WORKDIR /client1
+
+COPY rebar.config ./
+
+RUN rebar3 compile
+
+# CMD ["rebar3", "shell"]

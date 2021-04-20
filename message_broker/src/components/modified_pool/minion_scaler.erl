@@ -16,7 +16,7 @@ start_link(SelfName, WorkerSoup, NumWorkers) ->
                           []).
 
 init([_SelfName, WorkerSoup, NumWorkers]) ->
-    io:format("~p~p~n", ["minion scaler", self()]),
+    % io:format("~p~p~n", ["minion scaler", self()]),
     % modified for fixed num of workers
     hire(NumWorkers, WorkerSoup),
 

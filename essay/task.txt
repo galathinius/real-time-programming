@@ -1,0 +1,30 @@
+SQL semantics on streaming data
+
+Requirements:    
+- min 4 pages, max 8, without references    
+- min 5 articles referenced into the essay, I will check, so don't just drop references    
+- no more than 30% links as references    
+"- Contents:
+Introduction,
+Problem statement,
+Comparative analysis of existing solutions (short description, pros and cons),
+Existing challenges and future directions,
+Conclusion"    
+"- Plagiarism - if text similarity greater than 0.7 Jaccard similarity, using LSH.
+Note that per essay I will generate about 50 variations with random synonym replacement.
+I will do manual inspection in case there will be any suspicions left."    
+
+- SQL semantics on streaming data: Dremel, Apache Beam, Apache Spark, streaming joins, KSQL
+
+Use this template: https://www.overleaf.com/latex/templates/template-for-submissions-to-scientific-reports/xyrztqvdccns
+
+
+
+
+
+
+Essay topics helper keywords:
+- Actors and transactions: Project Orleans, Inconsistency Robustness, Sagas, Distributed Consensus
+- Edge computing and analytics: edge devices, serverless, edgewise
+- SQL semantics on streaming data: Dremel, Apache Beam, Apache Spark, streaming joins, KSQL
+- In memory computing for big data analytics: Apache Spark, Apache Arrow, Hazelcast

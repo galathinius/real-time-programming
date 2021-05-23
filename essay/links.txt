@@ -1,0 +1,33 @@
+Dremel:
+http://static.googleusercontent.com/media/research.google.com/en/us/pubs/archive/36632.pdf
+
+https://cloud.google.com/blog/products/bigquery/bigquery-under-the-hood
+how dremel is used for big querry
+
+https://drill.apache.org/docs/architecture-introduction/
+apache sollution inspired by dremel
+
+https://blog.cloudera.com/cloudera-impala-real-time-queries-in-apache-hadoop-for-real/
+cloudera solution inspired by dremel
+
+google cloud dataflow
+http://www.vldb.org/pvldb/vol8/p1792-Akidau.pdf
+
+dataflow vs spark
+https://aliz.ai/dataflow-vs-spark/
+ZetaSQL syntax (in BigQuery)
+
+streaming joins
+https://databricks.com/blog/2018/03/13/introducing-stream-stream-joins-in-apache-spark-2-3.html
+
+structured streaming programming guide (!read, too much info)
+https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html
+
+streaming watermark (dl for events)
+https://jaceklaskowski.gitbooks.io/spark-structured-streaming/content/spark-sql-streaming-watermark.html
+
+streaming querry operators
+https://jaceklaskowski.gitbooks.io/spark-structured-streaming/content/spark-sql-streaming-Dataset-operators.html
+
+overview of streaming join
+https://jaceklaskowski.gitbooks.io/spark-structured-streaming/content/spark-sql-streaming-join.html

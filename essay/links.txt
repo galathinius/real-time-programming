@@ -31,3 +31,7 @@ https://jaceklaskowski.gitbooks.io/spark-structured-streaming/content/spark-sql-
 
 overview of streaming join
 https://jaceklaskowski.gitbooks.io/spark-structured-streaming/content/spark-sql-streaming-join.html
+
+ksqldb is a new version of ksql
+intro
+https://www.confluent.io/blog/intro-to-ksqldb-sql-database-streaming/

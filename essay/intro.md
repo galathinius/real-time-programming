@@ -1,8 +1,16 @@
 <h1> Lets understand the topic first.</h1>
+Every part of it, what it means by itself, and then what they mean dans l'ensemble </br>
+why french? </br>
+
+*because* （☆ω☆*）｡･:*:･ﾟ★,｡･:*:･ﾟ☆ 
+
 </br>
 <h2>SQL</h2>
 
-[SQL (Structured Query Language) is a descriptive computer language designed for updating, retrieving, and calculating data in table-based databases.](https://developer.mozilla.org/en-US/docs/Glossary/SQL)</br></br>
+[SQL (Structured Query Language) is a descriptive computer language designed for updating, retrieving, and calculating data in table-based databases.](https://developer.mozilla.org/en-US/docs/Glossary/SQL)</br>
+
+basically a language to get and update data in a database
+</br></br>
 
 
 

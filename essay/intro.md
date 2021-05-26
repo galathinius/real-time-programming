@@ -1,11 +1,12 @@
 <h1> Lets understand the topic first.</h1>
 </br>
-<h2>SQL</h2></br>
-[SQL (Structured Query Language) is a descriptive computer language designed for updating, retrieving, and calculating data in table-based databases.](https://developer.mozilla.org/en-US/docs/Glossary/SQL)</br>
+<h2>SQL</h2>
 
-[SQL is a domain-specific language used in programming and designed for managing data held in a relational database management system (RDBMS), or for stream processing in a relational data stream management system (RDSMS). It is particularly useful in handling structured data, i.e. data incorporating relations among entities and variables.](https://en.wikipedia.org/wiki/SQL)</br></br>
+[SQL (Structured Query Language) is a descriptive computer language designed for updating, retrieving, and calculating data in table-based databases.](https://developer.mozilla.org/en-US/docs/Glossary/SQL)</br></br>
 
-<h2>Semantics</h2></br>
+
+
+<h2>Semantics</h2>
 /sɪˈmantɪks/
 
 noun: semantics;</br>
@@ -47,4 +48,4 @@ Okay, until now it is understood that this essay will be about how sql works beh
 
 The *streaming data* part comes now.
 
-
+<h2>Streaming data</h2>

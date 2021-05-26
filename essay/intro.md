@@ -18,14 +18,14 @@ basically a language to get and update data in a database
 /sɪˈmantɪks/
 
 noun: semantics;</br>
- noun: logical semantics; </br>
- noun: lexical semantics</br>
-
-    the branch of linguistics and logic concerned with meaning. The two main areas are logical semantics, concerned with matters such as sense and reference and presupposition and implication, and lexical semantics, concerned with the analysis of word meanings and relations between them.
-        the meaning of a word, phrase, or text.
-        plural noun: semantics
-        "such quibbling over semantics may seem petty stuff"
-
+noun: logical semantics; </br>
+noun: lexical semantics</br>
+`The branch of linguistics and logic concerned with meaning. 
+    The two main areas are logical semantics, concerned with matters such as sense and reference and presupposition and implication, and lexical semantics, concerned with the analysis of word meanings and relations between them.`</br>
+    `the meaning of a word, phrase, or text`
+        `plural noun: semantics`
+        `"such quibbling over semantics may seem petty stuff"`
+</br>
 *by google in colaboration with oxford languages*</br>
 
 </br></br>
@@ -33,7 +33,7 @@ noun: semantics;</br>
 Kinda abstract and doesn't clear up what 'sql semantics' could possibly mean</br>
 Searching for 'SQL semantincs' isn't really helpful as the only close result is this</br>
 
-    The semantics of SQL queries is formally defined by stating a set of rules that determine a syntax-driven translation of an SQL query to a formal model. The target model, called Extended Three Valued Predicate Calculus (E3VPC), is largely based on a set of well-known mathematical concepts. The rules which allow the transformation of a general E3VPC expression to a Canonical Form, which can be manipulated using traditional, two-valued predicate calculus are also given; in this way, problems like equivalence analysis of SQL queries are completely solved.
+`The semantics of SQL queries is formally defined by stating a set of rules that determine a syntax-driven translation of an SQL query to a formal model. The target model, called Extended Three Valued Predicate Calculus (E3VPC), is largely based on a set of well-known mathematical concepts. The rules which allow the transformation of a general E3VPC expression to a Canonical Form, which can be manipulated using traditional, two-valued predicate calculus are also given; in this way, problems like equivalence analysis of SQL queries are completely solved.` </br>
 
 [*Formal semantics of SQL queries*](https://dl.acm.org/doi/abs/10.1145/111197.111212)
 

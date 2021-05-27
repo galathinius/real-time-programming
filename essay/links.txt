@@ -20,7 +20,7 @@ ZetaSQL syntax (in BigQuery)
 streaming joins
 https://databricks.com/blog/2018/03/13/introducing-stream-stream-joins-in-apache-spark-2-3.html
 
-structured streaming programming guide (!read, too much info)
+structured streaming programming guide (not read, too much info)
 https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html
 
 streaming watermark (dl for events)

@@ -36,6 +36,23 @@ ksqldb is a new version of ksql
 intro
 https://www.confluent.io/blog/intro-to-ksqldb-sql-database-streaming/
 
+stream processing 101
+https://wso2.com/library/articles/2018/02/stream-processing-101-from-sql-to-streaming-sql-in-ten-minutes/
+
+aws solution
+https://aws.amazon.com/kinesis/
+
+apache storm
+http://storm.apache.org/
+
+streaming sql intro
+https://materialize.com/streaming-sql-intro/
+
+challeges data stream processing
+https://www.quora.com/What-are-the-challenges-of-data-stream-processing
+
+ksql alternative
+https://www.striim.com/analysis-streaming-sql-engines/
 
 
 
@@ -65,12 +82,11 @@ https://www.confluent.io/blog/intro-to-ksqldb-sql-database-streaming/
 
 
 
-
-
-
-
-
-
-
-project orleans
+project orleans erleans
 https://github.com/tsloughter
+
+actors ansactions
+https://wiki.c2.com/?TransactionalActorModel
+
+mq-s
+https://stackoverflow.com/a/5350026

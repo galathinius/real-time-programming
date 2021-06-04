@@ -54,14 +54,23 @@ https://www.quora.com/What-are-the-challenges-of-data-stream-processing
 ksql alternative
 https://www.striim.com/analysis-streaming-sql-engines/
 
+roasting kafka
+https://www.jesse-anderson.com/2019/10/why-i-recommend-my-clients-not-use-ksql-and-kafka-streams/
 
+a lot of info and articles, history of beam/dataflow
+https://medium.com/swlh/dataflow-and-apache-beam-the-result-of-a-learning-process-since-mapreduce-c591b2ab180e
 
+mapreduce
+https://research.google/pubs/pub62/
 
+flume java
+https://dl.acm.org/doi/10.1145/1806596.1806638
 
+MillWheel: Fault-Tolerant Stream Processing at Internet Scale
+https://research.google/pubs/pub41378/
 
-
-
-
+dataflow concepts
+https://cloud.google.com/dataflow/docs/concepts/streaming-pipelines
 
 
 

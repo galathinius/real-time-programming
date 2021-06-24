@@ -1,0 +1,14 @@
+ets table
+client responsible
+publisher responsible
+??????? intermediaries
+
+
+
+
+
+{ok,Sock} = gen_tcp:connect("localhost",3214,[{active,false}, {packet,raw}]).
+
+gen_tcp:send(Sock,messages:topic_request()).
+gen_tcp:send(Sock,messages:subscribe_request([<<"Topics">>])).
+A = gen_tcp:recv(Sock,0).

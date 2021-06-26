@@ -19,3 +19,5 @@ whenever there are updates[.](https://www.confluent.io/blog/kafka-streams-take-o
 it has tumbling and sliding windows[.](https://www.ibm.com/docs/en/streams/4.1.0?topic=implementation-window-handling) no mention of session ones
 
 It also has watermarks and triggers
+
+https://docs.google.com/spreadsheets/d/1a7wtB39RdRSClamtBBcMNZgDFvlsLC-ddURzzEQxODU/edit#gid=0
